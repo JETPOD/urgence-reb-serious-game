@@ -1,0 +1,16 @@
+# Système
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Éditeurs
+.vscode/
+.idea/
+
+# Logs et temp
+*.log
+.cache/
+
+# Captures QA
+qa_*.png

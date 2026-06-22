@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>URGENCE REB — Serious game de sensibilisation des urgences</title>
+<meta name="description" content="Serious game COREB pour la sensibilisation des urgences au Risque Épidémique et Biologique." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@700,800&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23047857'/%3E%3Cpath d='M10 16h12M16 10v12' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header class="topbar" role="banner">
+  <div class="brand">
+    <svg class="brand-logo" viewBox="0 0 40 40" aria-label="Logo NutricellScience" role="img">
+      <rect width="40" height="40" rx="9" fill="#047857"/>
+      <path d="M12 20h16M20 12v16" stroke="white" stroke-width="3.2" stroke-linecap="round"/>
+      <circle cx="20" cy="20" r="6.5" fill="none" stroke="white" stroke-width="2" opacity="0.5"/>
+    </svg>
+    <div class="brand-text">
+      <div class="brand-title">URGENCE REB</div>
+      <div class="brand-subtitle" id="brand-subtitle">Serious game · doctrine COREB</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <span class="pill">Prototype v0.2</span>
+    <span class="pill pill-muted">Doctrine COREB</span>
+  </div>
+</header>
+
+<!-- ==================== INTRO SCREEN ==================== -->
+<main id="screen-intro" class="screen screen-active">
+  <div class="intro-grid">
+    <section class="intro-hero">
+      <div class="eyebrow">Serious game · Doctrine COREB</div>
+      <h1>Saurez-vous repérer, classer et alerter avant que la chaîne de transmission ne s'enclenche&nbsp;?</h1>
+      <p class="lede">Un serious game en plusieurs modules pour entraîner les équipes d'urgences à la prise en charge d'un patient suspect de <strong>Risque Épidémique et Biologique</strong>. Chaque module incarne un rôle différent dans la procédure générique COREB en 5 étapes / 10 points-clés.</p>
+      <div class="legal">Prototype pédagogique. Données fictives. Aucun jugement clinique réel ne doit être tiré de cet outil.</div>
+    </section>
+    <aside class="intro-side">
+      <div class="card-objectifs">
+        <h3>Pré-requis pédagogiques</h3>
+        <ul>
+          <li><span class="num">1</span><div><strong>Dépister</strong> · symptômes + exposition + délai d'incubation</div></li>
+          <li><span class="num">2</span><div><strong>Protéger</strong> · masque patient, EPI soignant, isolement</div></li>
+          <li><span class="num">3</span><div><strong>Évaluer / Alerter / Classer</strong> · qSOFA, SBAR, triade</div></li>
+        </ul>
+        <div class="badge-row">
+          <span class="badge">Données fictives</span>
+          <span class="badge">Sourcé COREB</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Module selector -->
+  <section class="modules">
+    <div class="modules-header">
+      <h2>Choisir un module</h2>
+      <p class="modules-sub">Deux modules jouables, deux rôles différents, pour aborder l'ensemble du parcours du patient REB aux urgences.</p>
+    </div>
+    <div class="modules-grid">
+      <article class="module-card module-available" data-module="1">
+        <div class="module-badge">Module 1</div>
+        <h3 class="module-title">Le Repérage</h3>
+        <div class="module-role">Rôle : Infirmier(e) d'accueil et d'orientation (IOA)</div>
+        <p class="module-desc">Une garde de nuit, 6 patients à trier au SAU. Objectif : poser les bonnes questions, prendre la bonne décision, équiper patient et soignant.</p>
+        <div class="module-tags">
+          <span class="module-tag">Étape 1 · Dépister</span>
+          <span class="module-tag">Étape 2 · Protéger</span>
+        </div>
+        <div class="module-cta">
+          <button class="btn btn-primary" data-start-module="1">Lancer le module 1</button>
+          <span class="module-meta">≈ 8 min · 6 patients</span>
+        </div>
+      </article>
+
+      <article class="module-card module-available module-featured" data-module="2">
+        <div class="module-badge module-badge-new">Nouveau · Module 2</div>
+        <h3 class="module-title">La Triade</h3>
+        <div class="module-role">Rôle : Médecin sénior aux urgences</div>
+        <p class="module-desc">Trois patients suspects REB déjà classés vous sont confiés. Évaluez la gravité (qSOFA), prescrivez, structurez l'appel SBAR et déclenchez la triade SAMU / Infectiologue / ARS dans le bon ordre.</p>
+        <div class="module-tags">
+          <span class="module-tag">Étape 3 · Évaluer</span>
+          <span class="module-tag">Étape 4 · Traiter</span>
+          <span class="module-tag">Étape 5 · Alerter</span>
+          <span class="module-tag">Étape 6 · Classer</span>
+        </div>
+        <div class="module-cta">
+          <button class="btn btn-primary" data-start-module="2">Lancer le module 2</button>
+          <span class="module-meta">≈ 10 min · 3 patients</span>
+        </div>
+      </article>
+
+      <article class="module-card module-locked">
+        <div class="module-badge module-badge-soon">À venir</div>
+        <h3 class="module-title">La Filière</h3>
+        <div class="module-role">Rôle : Coordination du service</div>
+        <p class="module-desc">Orienter, transporter, conditionner les prélèvements en triple emballage, superviser le déshabillage, tracer les contacts. Étapes 7 à 10 de la procédure COREB.</p>
+        <div class="module-tags">
+          <span class="module-tag">Étape 7 à 10</span>
+        </div>
+        <div class="module-cta">
+          <button class="btn btn-ghost" disabled>Module en conception</button>
+        </div>
+      </article>
+    </div>
+
+    <div class="modules-footer">
+      <button class="btn btn-ghost" id="btn-howto">Comment ça marche ?</button>
+    </div>
+  </section>
+</main>
+
+<!-- ==================== HOWTO MODAL ==================== -->
+<div id="modal-howto" class="modal-overlay" hidden>
+  <div class="modal">
+    <h2>Comment jouer</h2>
+    <p><strong>Module 1 · Le Repérage</strong></p>
+    <ol class="howto-list">
+      <li>Triez chaque patient en posant les bonnes questions (symptômes, exposition, délai).</li>
+      <li>Décidez : « filière classique » ou « suspect REB ».</li>
+      <li>Si suspect, équipez patient et soignant, et isolez géographiquement.</li>
+    </ol>
+    <p><strong>Module 2 · La Triade</strong></p>
+    <ol class="howto-list">
+      <li>Évaluez la gravité (calcul qSOFA, signes spécifiques).</li>
+      <li>Prescrivez examens et traitements probabilistes.</li>
+      <li>Construisez un appel SBAR structuré.</li>
+      <li>Activez la triade : SAMU + Infectiologue référent + ARS/CIRE, dans le bon ordre.</li>
+      <li>Classez le cas avec la concertation pluridisciplinaire.</li>
+    </ol>
+    <p class="hint">Un chronomètre court par étape — réagir vite et juste rapporte plus de points. Une fiche-mémo COREB reste accessible en bas à droite.</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="btn-howto-close">J'ai compris</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODULE 1 GAME SCREEN ==================== -->
+<main id="screen-game" class="screen">
+  <div class="game-bar">
+    <div class="game-bar-left">
+      <div class="progress-label">Patient <span id="patient-index">1</span> / 6</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+    <div class="game-bar-center">
+      <div class="timer" id="timer">
+        <svg viewBox="0 0 36 36" class="timer-ring"><circle cx="18" cy="18" r="15.5" class="timer-bg"/><circle cx="18" cy="18" r="15.5" class="timer-fg" id="timer-ring-fg"/></svg>
+        <span class="timer-value" id="timer-value">60</span>
+      </div>
+    </div>
+    <div class="game-bar-right">
+      <div class="scores">
+        <div class="score-item"><span class="score-label">Vigilance</span><span class="score-value" id="score-vigilance">0</span></div>
+        <div class="score-item"><span class="score-label">Protection</span><span class="score-value" id="score-protection">0</span></div>
+        <div class="score-item"><span class="score-label">Délai</span><span class="score-value" id="score-delai">0</span></div>
+        <div class="score-item"><span class="score-label">Pratiques</span><span class="score-value" id="score-pratiques">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <section class="panel panel-patient">
+      <div class="panel-header">
+        <div class="panel-title">Présentation à l'accueil</div>
+        <div class="panel-sub" id="patient-time">Arrivée · 23h17</div>
+      </div>
+      <div class="patient-card">
+        <div class="patient-avatar" id="patient-avatar">?</div>
+        <div class="patient-meta">
+          <div class="patient-name" id="patient-name">—</div>
+          <div class="patient-age" id="patient-age">—</div>
+          <div class="patient-motif" id="patient-motif">—</div>
+        </div>
+      </div>
+      <div class="vitals" id="vitals"></div>
+      <div class="patient-quote" id="patient-quote">—</div>
+    </section>
+
+    <section class="panel panel-action">
+      <div class="phase-tabs">
+        <div class="phase-tab phase-active" data-phase="interrogation">1. Interrogatoire</div>
+        <div class="phase-tab" data-phase="decision">2. Décision</div>
+        <div class="phase-tab" data-phase="protection">3. Protection</div>
+        <div class="phase-tab" data-phase="feedback">4. Feedback</div>
+      </div>
+
+      <div class="phase phase-active" id="phase-interrogation">
+        <h3>Quelles questions de tri posez-vous&nbsp;?</h3>
+        <p class="phase-help">Sélectionnez les 3 questions les plus pertinentes. Chaque bonne question dévoile une information clé.</p>
+        <div class="question-list" id="question-list"></div>
+        <div class="reveals" id="reveals"></div>
+        <button class="btn btn-primary" id="btn-to-decision" disabled>Passer à la décision</button>
+      </div>
+
+      <div class="phase" id="phase-decision">
+        <h3>Votre décision&nbsp;?</h3>
+        <p class="phase-help">Sur la base de vos informations, classez ce patient.</p>
+        <div class="decision-grid">
+          <button class="decision-card" data-decision="non-reb">
+            <div class="decision-icon">○</div>
+            <div class="decision-title">Filière classique</div>
+            <div class="decision-desc">Pas de suspicion REB. Tri standard.</div>
+          </button>
+          <button class="decision-card" data-decision="suspect-reb">
+            <div class="decision-icon decision-icon-alert">!</div>
+            <div class="decision-title">Suspect REB</div>
+            <div class="decision-desc">Symptômes + exposition compatibles. Activer la procédure.</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="phase" id="phase-protection">
+        <h3>Mesures de protection à mettre en place</h3>
+        <p class="phase-help">Cochez tout ce qui s'applique <em>immédiatement</em>. Pensez patient, soignant, environnement.</p>
+        <div class="protection-grid">
+          <div class="protection-group">
+            <div class="protection-group-title">Pour le patient</div>
+            <label class="check-item" data-tag="patient-mask"><input type="checkbox"><span>Masque chirurgical au patient</span></label>
+            <label class="check-item" data-tag="patient-sha"><input type="checkbox"><span>SHA pour le patient</span></label>
+          </div>
+          <div class="protection-group">
+            <div class="protection-group-title">EPI du soignant</div>
+            <label class="check-item" data-tag="ffp2"><input type="checkbox"><span>APR type FFP2</span></label>
+            <label class="check-item" data-tag="surblouse"><input type="checkbox"><span>Sur-blouse / casaque imperméable</span></label>
+            <label class="check-item" data-tag="gants"><input type="checkbox"><span>Gants à usage unique</span></label>
+            <label class="check-item" data-tag="lunettes"><input type="checkbox"><span>Lunettes de protection</span></label>
+          </div>
+          <div class="protection-group">
+            <div class="protection-group-title">Environnement</div>
+            <label class="check-item" data-tag="box-dedie"><input type="checkbox"><span>Box dédié, porte fermée</span></label>
+            <label class="check-item" data-tag="salle-attente"><input type="checkbox"><span>Garder en salle d'attente</span></label>
+            <label class="check-item" data-tag="stop-clim"><input type="checkbox"><span>Couper ventilation/clim</span></label>
+            <label class="check-item" data-tag="dasri"><input type="checkbox"><span>Filière DASRI activée</span></label>
+            <label class="check-item" data-tag="usage-unique"><input type="checkbox"><span>Matériel à usage unique dans la pièce</span></label>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="btn-validate-protection">Valider les mesures</button>
+      </div>
+
+      <div class="phase" id="phase-feedback">
+        <h3 id="feedback-title">Feedback</h3>
+        <div class="feedback-body" id="feedback-body"></div>
+        <div class="patient-resolution" id="patient-resolution"></div>
+        <button class="btn btn-primary" id="btn-next-patient">Patient suivant</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ==================== MODULE 2 GAME SCREEN ==================== -->
+<main id="screen-game2" class="screen">
+  <div class="game-bar">
+    <div class="game-bar-left">
+      <div class="progress-label">Patient <span id="m2-patient-index">1</span> / 3</div>
+      <div class="progress-track"><div class="progress-fill" id="m2-progress-fill"></div></div>
+    </div>
+    <div class="game-bar-center">
+      <div class="timer" id="m2-timer">
+        <svg viewBox="0 0 36 36" class="timer-ring"><circle cx="18" cy="18" r="15.5" class="timer-bg"/><circle cx="18" cy="18" r="15.5" class="timer-fg" id="m2-timer-ring-fg"/></svg>
+        <span class="timer-value" id="m2-timer-value">90</span>
+      </div>
+    </div>
+    <div class="game-bar-right">
+      <div class="scores">
+        <div class="score-item"><span class="score-label">Évaluation</span><span class="score-value" id="m2-score-eval">0</span></div>
+        <div class="score-item"><span class="score-label">Traitement</span><span class="score-value" id="m2-score-traitement">0</span></div>
+        <div class="score-item"><span class="score-label">Communication</span><span class="score-value" id="m2-score-comm">0</span></div>
+        <div class="score-item"><span class="score-label">Triade</span><span class="score-value" id="m2-score-triade">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <section class="panel panel-patient">
+      <div class="panel-header">
+        <div class="panel-title">Transfert du patient suspect REB</div>
+        <div class="panel-sub" id="m2-patient-time">Heure · 23h45</div>
+      </div>
+      <div class="patient-card">
+        <div class="patient-avatar" id="m2-patient-avatar">?</div>
+        <div class="patient-meta">
+          <div class="patient-name" id="m2-patient-name">—</div>
+          <div class="patient-age" id="m2-patient-age">—</div>
+          <div class="patient-motif" id="m2-patient-motif">—</div>
+        </div>
+      </div>
+      <div class="vitals" id="m2-vitals"></div>
+      <div class="patient-context" id="m2-patient-context"></div>
+      <div class="patient-quote" id="m2-patient-quote">—</div>
+    </section>
+
+    <section class="panel panel-action">
+      <div class="phase-tabs">
+        <div class="phase-tab phase-active" data-phase2="qsofa">1. qSOFA</div>
+        <div class="phase-tab" data-phase2="examens">2. Examens / Tt</div>
+        <div class="phase-tab" data-phase2="sbar">3. SBAR</div>
+        <div class="phase-tab" data-phase2="triade">4. Triade</div>
+        <div class="phase-tab" data-phase2="classement">5. Classer</div>
+        <div class="phase-tab" data-phase2="feedback2">6. Feedback</div>
+      </div>
+
+      <!-- Phase 1: qSOFA -->
+      <div class="phase phase-active" id="phase-qsofa">
+        <h3>Évaluation rapide de la gravité&nbsp;: score qSOFA</h3>
+        <p class="phase-help">Cochez les critères présents chez ce patient. Un score ≥ 2 identifie un patient à risque de mauvais pronostic.</p>
+        <div class="qsofa-grid">
+          <label class="qsofa-item" data-q="tas">
+            <input type="checkbox">
+            <div class="qsofa-content">
+              <div class="qsofa-title">Pression artérielle systolique ≤ 100 mmHg</div>
+              <div class="qsofa-desc">Hypotension marqueur de défaillance circulatoire</div>
+            </div>
+          </label>
+          <label class="qsofa-item" data-q="fr">
+            <input type="checkbox">
+            <div class="qsofa-content">
+              <div class="qsofa-title">Fréquence respiratoire ≥ 22/min</div>
+              <div class="qsofa-desc">Polypnée marqueur de défaillance respiratoire</div>
+            </div>
+          </label>
+          <label class="qsofa-item" data-q="conf">
+            <input type="checkbox">
+            <div class="qsofa-content">
+              <div class="qsofa-title">Confusion / Glasgow &lt; 15</div>
+              <div class="qsofa-desc">Altération neurologique non liée à un état basal</div>
+            </div>
+          </label>
+        </div>
+        <div class="qsofa-result" id="qsofa-result">
+          <div class="qsofa-result-label">Score qSOFA en cours</div>
+          <div class="qsofa-result-value"><span id="qsofa-score">0</span> / 3</div>
+          <div class="qsofa-result-interp" id="qsofa-interp">Aucun critère coché.</div>
+        </div>
+        <button class="btn btn-primary" id="btn-validate-qsofa">Valider l'évaluation</button>
+      </div>
+
+      <!-- Phase 2: Examens / Traitement -->
+      <div class="phase" id="phase-examens">
+        <h3>Examens et traitement probabiliste</h3>
+        <p class="phase-help">Sélectionnez ce qui est utile et conforme. Attention aux examens inappropriés ou risquant de retarder la filière REB.</p>
+
+        <div class="exam-group">
+          <div class="exam-group-title">Examens à prescrire</div>
+          <div class="exam-list" id="exam-list"></div>
+        </div>
+
+        <div class="exam-group">
+          <div class="exam-group-title">Traitement probabiliste</div>
+          <div class="exam-list" id="treatment-list"></div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-validate-examens">Valider la prescription</button>
+      </div>
+
+      <!-- Phase 3: SBAR -->
+      <div class="phase" id="phase-sbar">
+        <h3>Construire l'appel SBAR (SAED)</h3>
+        <p class="phase-help">Vous allez appeler l'infectiologue référent REB. Pour chaque rubrique, choisissez la formulation la plus juste, courte et structurée.</p>
+        <div class="sbar-builder" id="sbar-builder"></div>
+        <div class="sbar-preview" id="sbar-preview">
+          <div class="sbar-preview-title">Aperçu de votre transmission</div>
+          <div class="sbar-preview-body" id="sbar-preview-body"><em>Vide pour l'instant. Cliquez sur une option dans chaque section.</em></div>
+        </div>
+        <button class="btn btn-primary" id="btn-validate-sbar" disabled>Valider l'appel</button>
+      </div>
+
+      <!-- Phase 4: Triade -->
+      <div class="phase" id="phase-triade">
+        <h3>Activation de la triade d'expertise</h3>
+        <p class="phase-help">Glissez ou cliquez les contacts dans l'ordre où vous les appelez. La <strong>triade COREB</strong> doit être activée en premier (SAMU, Infectiologue référent REB, ARS/CIRE), puis les acteurs internes de l'établissement.</p>
+
+        <div class="triade-area">
+          <div class="triade-pool">
+            <div class="triade-pool-title">Contacts disponibles</div>
+            <div class="contact-pool" id="contact-pool"></div>
+          </div>
+          <div class="triade-sequence">
+            <div class="triade-sequence-title">Votre ordre d'appel</div>
+            <ol class="contact-sequence" id="contact-sequence">
+              <li class="contact-slot" data-slot="0">1. ⋯</li>
+              <li class="contact-slot" data-slot="1">2. ⋯</li>
+              <li class="contact-slot" data-slot="2">3. ⋯</li>
+              <li class="contact-slot" data-slot="3">4. ⋯</li>
+              <li class="contact-slot" data-slot="4">5. ⋯</li>
+              <li class="contact-slot" data-slot="5">6. ⋯</li>
+            </ol>
+            <button class="btn btn-ghost btn-small" id="btn-reset-sequence">Réinitialiser</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="btn-validate-triade">Valider la chaîne d'alerte</button>
+      </div>
+
+      <!-- Phase 5: Classement -->
+      <div class="phase" id="phase-classement">
+        <h3>Classement du cas après concertation</h3>
+        <p class="phase-help">Après concertation pluridisciplinaire (SAMU, infectiologue ESR, CIRE/ARS), classez votre patient.</p>
+        <div class="classement-grid">
+          <button class="classement-card" data-class="exclu">
+            <div class="classement-icon">○</div>
+            <div class="classement-title">Cas exclu</div>
+            <div class="classement-desc">Diagnostic alternatif confirmé · retour filière classique.</div>
+          </button>
+          <button class="classement-card" data-class="suspect">
+            <div class="classement-icon classement-icon-warn">≈</div>
+            <div class="classement-title">Reste suspect</div>
+            <div class="classement-desc">Levée de doute en cours · maintien des mesures.</div>
+          </button>
+          <button class="classement-card" data-class="possible">
+            <div class="classement-icon classement-icon-alert">!</div>
+            <div class="classement-title">Cas possible</div>
+            <div class="classement-desc">Transfert vers ESR REB · alerte CORRUSS si bioterrorisme.</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Phase 6: Feedback -->
+      <div class="phase" id="phase-feedback2">
+        <h3 id="feedback2-title">Feedback</h3>
+        <div class="feedback-body" id="feedback2-body"></div>
+        <div class="patient-resolution" id="patient-resolution2"></div>
+        <button class="btn btn-primary" id="btn-next-patient2">Patient suivant</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- ==================== CHEAT SHEET (global) ==================== -->
+<button id="cheat-toggle" class="cheat-toggle" aria-label="Ouvrir la fiche mémo COREB" hidden>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h13a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+  <span>Mémo COREB</span>
+</button>
+<aside id="cheat-panel" class="cheat-panel" hidden>
+  <div class="cheat-head"><h4 id="cheat-title">Mémo COREB</h4><button id="cheat-close" aria-label="Fermer">×</button></div>
+  <div class="cheat-body" id="cheat-body"></div>
+</aside>
+
+<!-- ==================== DEBRIEF SCREEN (Module 1) ==================== -->
+<main id="screen-debrief" class="screen">
+  <div class="debrief-container">
+    <div class="debrief-head">
+      <div class="eyebrow">Fin de garde · Debrief Module 1</div>
+      <h2>Vos résultats — Le Repérage</h2>
+    </div>
+    <div class="score-summary">
+      <div class="score-total-card">
+        <div class="score-total-label">Score global</div>
+        <div class="score-total-value" id="total-score">0</div>
+        <div class="score-total-max">/ 100</div>
+        <div class="score-grade" id="score-grade">—</div>
+      </div>
+      <div class="score-breakdown">
+        <div class="breakdown-row"><span>Vigilance</span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-vigilance"></div></div><span class="breakdown-val" id="val-vigilance">0/25</span></div>
+        <div class="breakdown-row"><span>Protection</span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-protection"></div></div><span class="breakdown-val" id="val-protection">0/25</span></div>
+        <div class="breakdown-row"><span>Délai</span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-delai"></div></div><span class="breakdown-val" id="val-delai">0/25</span></div>
+        <div class="breakdown-row"><span>Bonnes pratiques</span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-pratiques"></div></div><span class="breakdown-val" id="val-pratiques">0/25</span></div>
+      </div>
+    </div>
+    <div class="badges-earned" id="badges-earned"></div>
+    <h3 class="debrief-section-title">Replay des 6 patients</h3>
+    <div class="replay-list" id="replay-list"></div>
+    <h3 class="debrief-section-title">Continuer la formation</h3>
+    <div class="next-module-cta" id="next-module-cta">
+      <div class="next-module-info">
+        <div class="eyebrow">Suite logique</div>
+        <h4>Module 2 · La Triade</h4>
+        <p>Vous passez médecin sénior. qSOFA, prescription, appel SBAR et activation de la chaîne d'alerte SAMU / Infectiologue / ARS.</p>
+      </div>
+      <button class="btn btn-primary" id="btn-go-module2">Lancer le Module 2</button>
+    </div>
+    <h3 class="debrief-section-title">Ressources pour aller plus loin</h3>
+    <div class="resources-grid">
+      <a class="resource-card" href="https://www.coreb.infectiologie.com/" target="_blank" rel="noopener">
+        <div class="resource-source">coreb.infectiologie.com</div>
+        <div class="resource-title">Mission COREB nationale</div>
+        <div class="resource-desc">Site de référence officiel · fiches REB, alertes, procédures.</div>
+      </a>
+      <a class="resource-card" href="https://www.sfmu.org/upload/consensus/coreb-procgen_180501.pdf" target="_blank" rel="noopener">
+        <div class="resource-source">SFMU · PDF</div>
+        <div class="resource-title">Procédure générique COREB</div>
+        <div class="resource-desc">5 étapes / 10 points-clés en prise en charge REB.</div>
+      </a>
+      <a class="resource-card" href="https://www.iledefrance.ars.sante.fr/la-gestion-des-risques-epidemiques-et-biologiques-reb" target="_blank" rel="noopener">
+        <div class="resource-source">ARS Île-de-France</div>
+        <div class="resource-title">Gestion du REB</div>
+        <div class="resource-desc">Organisation territoriale, ESR, filières de soins.</div>
+      </a>
+    </div>
+    <div class="debrief-cta">
+      <button class="btn btn-ghost" id="btn-restart">Retour à l'accueil</button>
+      <button class="btn btn-ghost" id="btn-share-results">Copier le résumé</button>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== DEBRIEF SCREEN (Module 2) ==================== -->
+<main id="screen-debrief2" class="screen">
+  <div class="debrief-container">
+    <div class="debrief-head">
+      <div class="eyebrow">Fin de garde · Debrief Module 2</div>
+      <h2>Vos résultats — La Triade</h2>
+    </div>
+    <div class="score-summary">
+      <div class="score-total-card">
+        <div class="score-total-label">Score global</div>
+        <div class="score-total-value" id="m2-total-score">0</div>
+        <div class="score-total-max">/ 100</div>
+        <div class="score-grade" id="m2-score-grade">—</div>
+      </div>
+      <div class="score-breakdown">
+        <div class="breakdown-row"><span>Évaluation</span><div class="breakdown-bar"><div class="breakdown-fill" id="m2-bar-eval"></div></div><span class="breakdown-val" id="m2-val-eval">0/25</span></div>
+        <div class="breakdown-row"><span>Traitement</span><div class="breakdown-bar"><div class="breakdown-fill" id="m2-bar-traitement"></div></div><span class="breakdown-val" id="m2-val-traitement">0/25</span></div>
+        <div class="breakdown-row"><span>Communication SBAR</span><div class="breakdown-bar"><div class="breakdown-fill" id="m2-bar-comm"></div></div><span class="breakdown-val" id="m2-val-comm">0/25</span></div>
+        <div class="breakdown-row"><span>Triade COREB</span><div class="breakdown-bar"><div class="breakdown-fill" id="m2-bar-triade"></div></div><span class="breakdown-val" id="m2-val-triade">0/25</span></div>
+      </div>
+    </div>
+    <div class="badges-earned" id="m2-badges-earned"></div>
+    <h3 class="debrief-section-title">Replay des 3 patients</h3>
+    <div class="replay-list" id="m2-replay-list"></div>
+    <h3 class="debrief-section-title">Ressources clés</h3>
+    <div class="resources-grid">
+      <a class="resource-card" href="https://www.coreb.infectiologie.com/UserFiles/File/procedures/20200408-procgenvalidee30mai2018-majars-esr.pdf" target="_blank" rel="noopener">
+        <div class="resource-source">COREB · PDF</div>
+        <div class="resource-title">Procédure générique 10 points</div>
+        <div class="resource-desc">Version annexée ARS / ESR. Doctrine triade SAMU + Infectiologue + ARS/CIRE.</div>
+      </a>
+      <a class="resource-card" href="https://www.infectiologie.com/UserFiles/File/spilf/atb/info-antibio/info-antibio-2016-06.pdf" target="_blank" rel="noopener">
+        <div class="resource-source">SPILF · PDF</div>
+        <div class="resource-title">qSOFA et Sepsis-3</div>
+        <div class="resource-desc">Définition opérationnelle du sepsis, critères qSOFA simplifiés.</div>
+      </a>
+      <a class="resource-card" href="https://www.prevention-medicale.org/formations-outils-et-methodes/methodes-de-prevention/Approche-par-processus/sbar" target="_blank" rel="noopener">
+        <div class="resource-source">Prévention médicale</div>
+        <div class="resource-title">Outil SAED / SBAR</div>
+        <div class="resource-desc">Transmission structurée Situation - Antécédents - Évaluation - Demande.</div>
+      </a>
+    </div>
+    <div class="debrief-cta">
+      <button class="btn btn-primary" id="m2-btn-restart">Retour à l'accueil</button>
+      <button class="btn btn-ghost" id="m2-btn-replay">Rejouer le module 2</button>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== TOAST ==================== -->
+<div id="toast" class="toast" hidden></div>
+
+<footer class="footer">
+  Prototype <strong>URGENCE REB</strong> · Modules 1 &amp; 2 · Conception NutricellScience · Mai 2026 · Données fictives — usage pédagogique
+</footer>
+
+<script src="game.js"></script>
+<script src="game2.js"></script>
+</body>
+</html>
