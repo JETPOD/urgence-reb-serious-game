@@ -4,6 +4,8 @@ Prototype HTML5 d'un serious game pédagogique pour entraîner les équipes d'ur
 
 > Outil pédagogique, données fictives. Aucun jugement clinique réel ne doit être tiré de cet outil.
 
+**Démo en ligne** https://jetpod.github.io/urgence-reb-serious-game/
+
 ## Aperçu
 
 Deux modules jouables, deux rôles cliniques différents, pour couvrir le parcours du patient suspect REB aux urgences.
