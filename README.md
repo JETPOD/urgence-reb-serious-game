@@ -27,7 +27,7 @@ Trois patients déjà classés suspects par l'IOA. Évaluation qSOFA, prescripti
 ## Stack technique
 
 - HTML5 / CSS3 / JavaScript vanilla, sans framework
-- Charte visuelle NutriCellScience (palette emerald / teal, General Sans + Cabinet Grotesk)
+- Charte visuelle emerald / teal (typographies General Sans + Cabinet Grotesk)
 - Aucune dépendance externe, aucun build — ouvrez `index.html` dans un navigateur moderne
 
 ## Démarrage rapide
@@ -45,7 +45,7 @@ Puis ouvrez `http://localhost:8000` dans votre navigateur.
 ```
 urgence-reb-serious-game/
 ├── index.html       # Écrans : accueil, module 1, module 2, debriefs
-├── style.css        # Thème NutriCellScience + responsive (≤ 720 px)
+├── style.css        # Thème visuel + responsive (≤ 720 px)
 ├── game.js          # Logique Module 1 + helpers globaux
 ├── game2.js         # Logique Module 2
 └── README.md
@@ -77,5 +77,5 @@ Version 0.2 · Modules 1 & 2 fonctionnels.
 
 ## Crédits
 
-Conception et développement Dr Jean-Etienne Podik · NutriCellScience · 2026.
+Conception et développement Dr Jean-Etienne Podik · 2026.
 Toute contribution (issue, pull request, retour d'utilisation en formation) est bienvenue.
