@@ -310,6 +310,8 @@ $$("[data-start-module]").forEach((btn) => {
       startGame();
     } else if (m === "2" && typeof startModule2 === "function") {
       startModule2();
+    } else if (m === "3" && typeof startModule3 === "function") {
+      startModule3();
     }
   });
 });
@@ -392,6 +394,45 @@ const CHEAT_M2 = `
   <p class="cheat-note">Source : COREB · ARS · ESR (procédure 2018-2020).</p>
 `;
 
+const CHEAT_M3 = `
+  <h5>Étape 7 · Prélever en sécurité</h5>
+  <ul>
+    <li>Prélèvement sous EPI complet, box dédié</li>
+    <li>Triple emballage UN2814 (P620) · catégorie A</li>
+    <li>Décontamination du tube primaire (SHA + compresse)</li>
+    <li>Contact biologiste + labo de référence préalable</li>
+  </ul>
+  <h5>Étape 8 · Déshabillage EPI (SF2H)</h5>
+  <ol>
+    <li>SHA sur gants</li>
+    <li>Retrait tablier / surblouse</li>
+    <li>Retrait des gants (roll-over)</li>
+    <li>SHA sur mains nues</li>
+    <li>Retrait lunettes / écran</li>
+    <li>Retrait charlotte puis FFP2</li>
+    <li>SHA finale</li>
+  </ol>
+  <h5>Étape 9 · Transport</h5>
+  <ul>
+    <li>ESR de référence confirmé</li>
+    <li>Brancardage dédié formé + escorte médicale</li>
+    <li>Bio-nettoyage du parcours emprunté</li>
+  </ul>
+  <h5>Étape 10 · Tracer les contacts</h5>
+  <ul>
+    <li><strong>A</strong> étroit : soin direct sans EPI complet, fluides, &lt; 1 m prolongé → isolement + suivi 21 j</li>
+    <li><strong>B</strong> occasionnel : pièce partagée, EPI incomplet ou bref → auto-surveillance 21 j</li>
+    <li><strong>C</strong> faible : croisement, EPI complet → information</li>
+  </ul>
+  <h5>Priorisation appels</h5>
+  <ul>
+    <li>Critiques (SAMU, biologiste, infectio, ARS, EOH) → répondre</li>
+    <li>Secondaires (direction, famille) → différer &lt; 90 s</li>
+    <li>Presse → rejeter, renvoi service com</li>
+  </ul>
+  <p class="cheat-note">Sources : COREB annexe ARS-ESR 2020 · SF2H 2019 · ADR/IATA P620 UN2814 · SpF gestion des contacts · HAS.</p>
+`;
+
 function setCheat(module) {
   const body = document.getElementById("cheat-body");
   const title = document.getElementById("cheat-title");
@@ -404,6 +445,10 @@ function setCheat(module) {
   } else if (module === 2) {
     title.textContent = "Mémo COREB · qSOFA · SBAR · Triade";
     body.innerHTML = CHEAT_M2;
+    toggle.hidden = false;
+  } else if (module === 3) {
+    title.textContent = "Mémo COREB · Prélever · Déshabiller · Transporter · Tracer";
+    body.innerHTML = CHEAT_M3;
     toggle.hidden = false;
   } else {
     toggle.hidden = true;
