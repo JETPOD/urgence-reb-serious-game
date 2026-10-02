@@ -51,12 +51,12 @@ const PATIENTS = [
       { label: "TA", value: "112/68" },
       { label: "SpO2", value: "96%" },
     ],
-    quote: "Je suis revenue de Conakry il y a une semaine, j'ai aidé mon oncle qui était malade là-bas. Je me sens vraiment faible et j'ai mal au ventre.",
+    quote: "Je suis revenue de Bunia, en RDC, il y a une semaine, j'ai aidé mon oncle qui était malade là-bas. Je me sens vraiment faible et j'ai mal au ventre.",
     relevantQuestions: ["Q_FIEVRE", "Q_VOYAGE", "Q_CONTACT", "Q_DELAI", "Q_DIG", "Q_SAIGN"],
     reveals: {
       Q_FIEVRE:  { txt: "Fièvre à 39.4°C, frissons, asthénie majeure.", critical: false },
-      Q_VOYAGE:  { txt: "Retour de Guinée (Conakry) il y a 7 jours. Zone d'épidémie Ebola active.", critical: true },
-      Q_CONTACT: { txt: "A soigné son oncle malade à Conakry — décédé depuis. Diarrhée et saignements gingivaux selon elle.", critical: true },
+      Q_VOYAGE:  { txt: "Retour de RDC (Bunia, province de l'Ituri) il y a 7 jours. Zone d'épidémie Ebola à virus Bundibugyo active (COREB, sept. 2026).", critical: true },
+      Q_CONTACT: { txt: "A soigné son oncle malade à Bunia — décédé depuis. Diarrhée et saignements gingivaux selon elle.", critical: true },
       Q_DELAI:   { txt: "Symptômes depuis 4 jours, compatibles avec l'incubation Ebola (2-21 j).", critical: false },
       Q_DIG:     { txt: "Diarrhées profuses depuis 48h, vomissements ce matin.", critical: true },
       Q_SAIGN:   { txt: "Petits saignements de nez ce soir. Pas d'ecchymoses pour l'instant.", critical: true },
@@ -69,7 +69,7 @@ const PATIENTS = [
       forbidden: ["salle-attente"],
       bonus: ["stop-clim", "patient-sha"],
     },
-    resolution: "Patient suspect Ebola classé « cas possible ». Orientation vers ESR REB après alerte SAMU/infectiologue/ARS. Chaîne contact à tracer.",
+    resolution: "Patiente suspecte Ebola (virus Bundibugyo, épidémie RDC 2026) classée « cas possible ». Orientation vers ESR REB après alerte SAMU/infectiologue/ARS. Chaîne contact à tracer.",
   },
 
   {
@@ -135,7 +135,7 @@ const PATIENTS = [
       forbidden: ["salle-attente"],
       bonus: ["patient-sha"],
     },
-    resolution: "Suspicion Mpox clade I. Précautions Air + Contact. Alerte infectiologue référent ESR. Recherche des contacts (avion, hébergement).",
+    resolution: "Suspicion Mpox clade I. Précautions contact, masque chirurgical au patient ; FFP2 et lunettes retenues ici par précaution au tri (lésions buccales), la fiche COREB du 18/03/2026 les réservant aux soins à risque d'aérosolisation. Alerte infectiologue référent ESR. Recherche des contacts (avion, hébergement) : vaccination post-exposition idéalement sous 4 jours.",
   },
 
   {
@@ -398,7 +398,7 @@ const CHEAT_M3 = `
   <h5>Étape 7 · Prélever en sécurité</h5>
   <ul>
     <li>Prélèvement sous EPI complet, box dédié</li>
-    <li>Triple emballage UN2814 (P620) · catégorie A</li>
+    <li>Triple emballage systématique. FHV : UN2814 catégorie A (P620). Mpox suspect : UN3373 catégorie B (COREB oct. 2024). MERS : UN3373 catégorie B (OMS), selon consigne du labo ESR</li>
     <li>Décontamination du tube primaire (SHA + compresse)</li>
     <li>Contact biologiste + labo de référence préalable</li>
   </ul>
@@ -409,7 +409,7 @@ const CHEAT_M3 = `
     <li>Retrait des gants (roll-over)</li>
     <li>SHA sur mains nues</li>
     <li>Retrait lunettes / écran</li>
-    <li>Retrait charlotte puis FFP2</li>
+    <li>Retrait de la FFP2 par les élastiques, en dernier</li>
     <li>SHA finale</li>
   </ol>
   <h5>Étape 9 · Transport</h5>
@@ -420,17 +420,21 @@ const CHEAT_M3 = `
   </ul>
   <h5>Étape 10 · Tracer les contacts</h5>
   <ul>
-    <li><strong>A</strong> étroit : soin direct sans EPI complet, fluides, &lt; 1 m prolongé → isolement + suivi 21 j</li>
-    <li><strong>B</strong> occasionnel : pièce partagée, EPI incomplet ou bref → auto-surveillance 21 j</li>
+    <li><strong>A</strong> étroit : soin direct sans EPI complet, fluides, &lt; 1 m prolongé → suivi actif</li>
+    <li><strong>B</strong> occasionnel : pièce partagée, EPI incomplet ou bref → auto-surveillance</li>
     <li><strong>C</strong> faible : croisement, EPI complet → information</li>
+    <li>Durée : 21 j (Ebola, Mpox) · 14 j (MERS-CoV)</li>
+    <li>Mpox : vaccination post-exposition idéalement &lt; 4 j, au plus tard 14 j</li>
+    <li>Contacts communautaires → ARS · soignants → EOH + santé au travail</li>
   </ul>
+  <p class="cheat-note">Graduation A/B/C : simplification pédagogique, à rapprocher des fiches contacts SpF et COREB.</p>
   <h5>Priorisation appels</h5>
   <ul>
     <li>Critiques (SAMU, biologiste, infectio, ARS, EOH) → répondre</li>
     <li>Secondaires (direction, famille) → différer &lt; 90 s</li>
     <li>Presse → rejeter, renvoi service com</li>
   </ul>
-  <p class="cheat-note">Sources : COREB annexe ARS-ESR 2020 · SF2H 2019 · ADR/IATA P620 UN2814 · SpF gestion des contacts · HAS.</p>
+  <p class="cheat-note">Sources : COREB procédure générique (annexe ARS-ESR 2020) · fiche MERS-CoV 09/12/2025 · fiches Mpox 24/10/2024 et 18/03/2026 · SF2H · ADR P620/P650.</p>
 `;
 
 function setCheat(module) {

@@ -23,7 +23,7 @@ const M2_PATIENTS = [
     age: "34 ans · F",
     avatar: "D",
     arrivee: "23h45",
-    motif: "Fièvre 39,4 °C + diarrhées, retour Guinée J7",
+    motif: "Fièvre 39,4 °C + diarrhées, retour RDC (Ituri) J7",
     context: "Suspicion REB déjà confirmée par l'IOA. Patiente isolée en box dédié, EPI complets en place. Vous prenez le relais en tant que médecin sénior.",
     vitals: {
       "TA": "98 / 56 mmHg",
@@ -58,12 +58,12 @@ const M2_PATIENTS = [
     // SBAR : pour chaque rubrique, options [bonne, moyenne, mauvaise]
     sbar: {
       situation: [
-        { id: "s-bonne", label: "Patiente de 34 ans, suspecte REB type FHV (Ebola), arrivée 23h45, fièvre 39,4 °C + diarrhées sanglantes au retour de Guinée à J7.", quality: "bonne" },
+        { id: "s-bonne", label: "Patiente de 34 ans, suspecte REB type FHV (Ebola), arrivée 23h45, fièvre 39,4 °C + diarrhées sanglantes au retour de RDC (Ituri, épidémie Ebola Bundibugyo) à J7.", quality: "bonne" },
         { id: "s-moy", label: "J'ai une dame qui revient d'Afrique avec de la fièvre, ça m'a l'air bizarre.", quality: "moy" },
         { id: "s-mauv", label: "Bonjour, on a une patiente, je vous appelle juste pour avoir votre avis quand vous pourrez.", quality: "mauv" }
       ],
       background: [
-        { id: "b-bonne", label: "Pas d'antécédent notable, séjour rural en Guinée 7 jours, contact possible avec un proche fébrile décédé, pas de vaccination FHV.", quality: "bonne" },
+        { id: "b-bonne", label: "Pas d'antécédent notable, séjour à Bunia (Ituri) jusqu'à J7, contact possible avec un proche fébrile décédé, pas de vaccination FHV.", quality: "bonne" },
         { id: "b-moy", label: "Pas grand-chose dans le dossier, je crois qu'elle a voyagé.", quality: "moy" },
         { id: "b-mauv", label: "On n'a pas eu le temps de creuser les antécédents, je vous rappellerai.", quality: "mauv" }
       ],
@@ -107,7 +107,7 @@ const M2_PATIENTS = [
     qsofa: { tas: false, fr: false, conf: false },
     qsofaExpected: 0,
     examens: [
-      { id: "pcr-mpox", label: "PCR Monkeypox (prélèvement lésion + écouvillon oropharyngé)", kind: "utile", explain: "Confirmation diagnostique. Prélèvement sous EPI, double emballage." },
+      { id: "pcr-mpox", label: "PCR Monkeypox (prélèvement lésion + écouvillon oropharyngé)", kind: "utile", explain: "Confirmation diagnostique. Prélèvement sous EPI, triple emballage, transport UN3373 catégorie B pour un cas suspect (COREB oct. 2024)." },
       { id: "serologies-ist", label: "Sérologies VIH / syphilis / VHB / VHC", kind: "utile", explain: "Diagnostic différentiel et co-infections fréquentes." },
       { id: "nfs-crp", label: "NFS, CRP, transaminases", kind: "utile", explain: "Bilan inflammatoire et hépatique de base." },
       { id: "scanner-tap-systematique", label: "Scanner TAP systématique", kind: "inutile", explain: "Pas d'indication chez un patient stable sans signe respiratoire." },

@@ -21,7 +21,8 @@ const M3_PATIENTS = [
     id: "diallo",
     name: "Mme Aïssatou Diallo",
     tag: "Suspect Ebola",
-    motif: "Retour Guinée J7 · fièvre + diarrhées sanglantes · classée cas possible",
+    followDays: 21,
+    motif: "Retour RDC (Ituri) J7 · fièvre + diarrhées sanglantes · classée cas possible",
     tasks: {
       // Tâche 1 · Prélèvement (ordonnancement)
       preleve: {
@@ -52,7 +53,7 @@ const M3_PATIENTS = [
           "Retrait des gants (technique roll-over).",
           "SHA sur mains nues.",
           "Retrait lunettes / écran facial (branches uniquement).",
-          "Retrait charlotte, puis FFP2 par les élastiques.",
+          "Sortie de la zone, retrait de la FFP2 par les élastiques sans toucher la face avant.",
           "SHA finale + habillage propre."
         ],
         peda: "Le retrait EPI est le moment le plus à risque de contamination. Sur FHV, une seule inversion peut suffire à contaminer le soignant."
@@ -89,7 +90,7 @@ const M3_PATIENTS = [
           { id: "agent", name: "Agent d'accueil", detail: "A distribué un bracelet, contact bref, masque en place.", expected: "C" },
           { id: "menage", name: "Agent de bio-nettoyage", detail: "Intervention post-transfert, EPI complet et formé.", expected: "N" }
         ],
-        peda: "Sur une FHV, tout contact étroit A doit être identifié précocement pour un suivi 21 jours actif. L'aggravation d'un contact manqué se compte en semaines."
+        peda: "Sur une FHV, tout contact étroit A doit être identifié précocement pour un suivi actif de 21 jours. Contacts communautaires : coordination ARS ; soignants : EOH et santé au travail."
       }
     }
   },
@@ -101,23 +102,24 @@ const M3_PATIENTS = [
     id: "aroua",
     name: "M. Karim Aroua",
     tag: "Suspect Mpox I",
+    followDays: 21,
     motif: "Retour RDC J10 · lésions vésiculo-pustuleuses · classé cas possible",
     tasks: {
       preleve: {
         title: "Sécuriser le prélèvement (étape 7)",
-        instruction: "Rangez les 8 étapes dans le bon ordre pour envoi UN2814 (P620).",
+        instruction: "Rangez les 8 étapes dans le bon ordre pour un cas suspect Mpox (procédure COREB du 24/10/2024).",
         axis: "secu",
         expected: [
           "Contact préalable biologiste et labo de référence.",
-          "Prélèvement sous EPI complet (lésion + écouvillon oropharyngé) en box dédié.",
+          "Prélèvement sous précautions contact + masque de soins, FFP2 et lunettes si risque d'aérosolisation (lésion + écouvillon oropharyngé).",
           "Décontaminer l'extérieur du contenant primaire (SHA + compresse).",
-          "Placer dans emballage secondaire étanche + absorbant.",
-          "Emballage tertiaire rigide agréé P620.",
-          "Étiqueter UN2814, catégorie A, avec fiche COREB.",
-          "Transport dédié, tracé, sans intermédiaire.",
+          "Placer dans un sachet étanche 95 kPa avec absorbant.",
+          "Emballage tertiaire rigide cartonné (P650).",
+          "Étiqueter UN3373, catégorie B, avec fiche de demande.",
+          "Acheminement tracé par le circuit habituel du laboratoire (COREB).",
           "Accusé de réception et enregistrement."
         ],
-        peda: "Le Mpox clade I est reclassé catégorie A dans certains contextes d'export. Le principe de précaution impose l'emballage UN2814 tant que l'orientation diagnostique n'est pas levée."
+        peda: "Selon la COREB (24/10/2024), un prélèvement de cas suspect ou possible Mpox voyage en triple emballage catégorie B (UN3373). La catégorie A (UN2814) est réservée aux envois au CNR de prélèvements non inactivés de cas confirmés et aux cultures virales."
       },
       desha: {
         title: "Superviser le déshabillage EPI (étape 8)",
@@ -129,7 +131,7 @@ const M3_PATIENTS = [
           "Retrait des gants (technique roll-over).",
           "SHA sur mains nues.",
           "Retrait lunettes / écran facial (branches uniquement).",
-          "Retrait charlotte, puis FFP2 par les élastiques.",
+          "Sortie de la zone, retrait de la FFP2 par les élastiques sans toucher la face avant.",
           "SHA finale + habillage propre."
         ],
         peda: "Sur Mpox, la contamination se fait surtout par contact avec les lésions et les fluides — le retrait des gants avant le SHA sur mains nues est la clé de voûte."
@@ -148,23 +150,23 @@ const M3_PATIENTS = [
           { id: "vsl", label: "Utiliser un VSL classique pour aller plus vite.", kind: "trap" },
           { id: "no-drap", label: "Ne pas draper le brancard (gain de temps).", kind: "trap" }
         ],
-        peda: "Un VSL n'est jamais adapté à un transport REB catégorie A. Le drapage protège l'environnement mobilier et facilite le bio-nettoyage aval."
+        peda: "Un VSL n'est pas adapté au transfert d'un patient REB : le transport est organisé avec le SAMU-Centre 15. Le drapage protège l'environnement mobilier et facilite le bio-nettoyage aval."
       },
       contacts: {
         title: "Tracer et graduer les contacts (étape 10)",
         instruction: "Attribuez un niveau d'exposition à chaque personne autour du patient.",
         axis: "contacts",
         people: [
-          { id: "med", name: "Médecin urgentiste", detail: "Examen dermatologique rapproché, EPI complet, gants doublés.", expected: "B" },
+          { id: "med", name: "Médecin urgentiste", detail: "Examen dermatologique rapproché, gants + surblouse, EPI conforme à la fiche COREB.", expected: "B" },
           { id: "ide", name: "IDE d'accueil", detail: "Prise des constantes, EPI complet.", expected: "B" },
-          { id: "dermato", name: "Dermatologue en consultation", detail: "Toucher direct des lésions sans gants doublés.", expected: "A" },
+          { id: "dermato", name: "Dermatologue en consultation", detail: "Toucher direct des lésions sans gants.", expected: "A" },
           { id: "conjoint", name: "Conjoint du patient", detail: "Cohabitation continue depuis le retour, contacts intimes.", expected: "A" },
           { id: "voisin-attente", name: "Autre patient en salle d'attente", detail: "Assis à 2 m pendant 25 min, masque chirurgical patient absent.", expected: "B" },
           { id: "agent", name: "Agent administratif", detail: "Remise du dossier, à distance, sans contact physique.", expected: "C" },
-          { id: "labo", name: "Technicien de laboratoire", detail: "A manipulé le prélèvement conforme UN2814 sous PSM.", expected: "N" },
+          { id: "labo", name: "Technicien de laboratoire", detail: "A manipulé le prélèvement en triple emballage conforme, sous PSM.", expected: "N" },
           { id: "friend", name: "Ami hébergé au domicile", detail: "Cohabitation partielle, pas de contact avec lésions.", expected: "B" }
         ],
-        peda: "Pour Mpox, la graduation A/B/C conditionne l'orientation vers la vaccination post-exposition et la nécessité d'un isolement domiciliaire."
+        peda: "Pour Mpox, l'identification précoce des contacts à risque conditionne la vaccination post-exposition, à proposer idéalement dans les 4 jours et au plus tard 14 jours après le contact (fiche COREB du 18/03/2026). Contacts communautaires : ARS ; soignants : EOH et santé au travail."
       }
     }
   },
@@ -176,23 +178,24 @@ const M3_PATIENTS = [
     id: "yilmaz",
     name: "M. Emre Yılmaz",
     tag: "Suspect MERS-CoV",
+    followDays: 14,
     motif: "Retour Arabie Saoudite J5 · pneumopathie hypoxémiante · classé cas possible",
     tasks: {
       preleve: {
         title: "Sécuriser le prélèvement (étape 7)",
-        instruction: "Rangez les 8 étapes dans le bon ordre pour envoi UN2814 (P620).",
+        instruction: "Rangez les 8 étapes dans le bon ordre (fiche COREB MERS-CoV du 09/12/2025).",
         axis: "secu",
         expected: [
-          "Contact préalable biologiste et labo de référence (CNR virus respiratoires).",
-          "Prélever sous EPI complet + APR (FFP2 minimum), en chambre à pression négative si disponible.",
+          "Classement cas possible validé avec l'infectiologue référent REB, contact du laboratoire de l'ESR.",
+          "Prélever sous FFP2, surblouse, gants, lunettes : naso-pharyngé + prélèvement profond (aspiration, crachat induit, LBA).",
           "Décontaminer l'extérieur du tube primaire (SHA + compresse).",
           "Placer dans emballage secondaire étanche + absorbant.",
-          "Emballage tertiaire rigide agréé P620.",
-          "Étiqueter UN2814, catégorie A, avec fiche COREB.",
-          "Transport dédié, tracé, sans intermédiaire.",
+          "Emballage tertiaire rigide cartonné (P650).",
+          "Étiqueter UN3373, catégorie B (échantillon clinique), selon consigne du laboratoire de l'ESR.",
+          "Acheminement tracé vers le laboratoire de l'ESR.",
           "Accusé de réception et enregistrement."
         ],
-        peda: "Le MERS-CoV impose un risque respiratoire aérosolisable. Le prélèvement se fait sous APR au minimum FFP2, si possible en chambre à pression négative."
+        peda: "Selon la fiche COREB du 09/12/2025, associer prélèvement naso-pharyngé et prélèvements profonds. Si les prélèvements réalisés avant J4 sont négatifs, les répéter à partir de J4. Ils peuvent être faits dans l'établissement d'accueil et transférés au laboratoire de l'ESR."
       },
       desha: {
         title: "Superviser le déshabillage EPI (étape 8)",
@@ -204,10 +207,10 @@ const M3_PATIENTS = [
           "Retrait des gants (technique roll-over).",
           "SHA sur mains nues.",
           "Retrait lunettes / écran facial (branches uniquement).",
-          "Retrait charlotte, puis FFP2 par les élastiques.",
+          "Sortie de la zone, retrait de la FFP2 par les élastiques sans toucher la face avant.",
           "SHA finale + habillage propre."
         ],
-        peda: "Sur agent respiratoire, ne jamais retirer la FFP2 avant la charlotte : cela expose à ré-inhalation par contact des cheveux contaminés."
+        peda: "Sur agent respiratoire, la FFP2 est retirée en dernier, hors de la zone de soins, par les élastiques, après retrait des gants et hygiène des mains. EPI COREB MERS : FFP2, une paire de gants, surblouse, lunettes, tablier si soins mouillants."
       },
       trans: {
         title: "Organiser le transport (étape 9)",
@@ -218,6 +221,7 @@ const M3_PATIENTS = [
           { id: "brancard", label: "Mobiliser une équipe de brancardage dédiée et formée.", kind: "mandatory" },
           { id: "clean", label: "Planifier le bio-nettoyage du parcours emprunté.", kind: "mandatory" },
           { id: "masque-patient", label: "Masque chirurgical au patient (patient conscient, non intubé).", kind: "mandatory" },
+          { id: "samu-ars", label: "Transfert vers l'ESR sous la responsabilité du SAMU-Centre 15, ARS informée.", kind: "mandatory" },
           { id: "asc-bloque", label: "Ascenseur bloqué pendant le trajet.", kind: "recommended" },
           { id: "no-oxy", label: "Retirer l'oxygène du patient pour ne pas contaminer.", kind: "trap" },
           { id: "aerosol", label: "Réaliser une aérosolthérapie pendant le transport.", kind: "trap" },
@@ -239,7 +243,7 @@ const M3_PATIENTS = [
           { id: "labo", name: "Technicien de biologie", detail: "Manipulation sous PSM, prélèvement conforme.", expected: "N" },
           { id: "fils", name: "Fils de retour du même voyage", detail: "Voyage commun mais asymptomatique et masqué en cabine.", expected: "C" }
         ],
-        peda: "Le MERS-CoV a un R0 modeste mais des super-propagations hospitalières documentées. Toute exposition sans APR à un patient tousseur classe A."
+        peda: "Le MERS-CoV a un R0 modeste mais des super-propagations hospitalières documentées. Toute exposition sans APR à un patient tousseur classe A. Fenêtre de surveillance : 14 jours. Contacts communautaires : ARS ; soignants : EOH et santé au travail."
       }
     }
   }
@@ -865,7 +869,7 @@ function m3RenderTaskFeedback(body, p, taskId, state, taskDef) {
     detail = `<ul class="fb-list">${lines.join("")}</ul>`;
   } else if (taskId === "contacts") {
     const lines = [`<li class="${state.correct === state.total ? "fb-ok" : "fb-warn"}">Classement correct sur ${state.correct} / ${state.total} personnes.</li>`];
-    if (state.missedA > 0) lines.push(`<li class="fb-ko">${state.missedA} contact(s) étroit(s) A manqué(s) — impact suivi 21 j.</li>`);
+    if (state.missedA > 0) lines.push(`<li class="fb-ko">${state.missedA} contact(s) étroit(s) A manqué(s) — impact sur le suivi de ${p.followDays} j.</li>`);
     if (state.wrongA > 0) lines.push(`<li class="fb-warn">${state.wrongA} contact(s) surclassé(s) A à tort.</li>`);
     detail = `<ul class="fb-list">${lines.join("")}</ul>`;
   }
