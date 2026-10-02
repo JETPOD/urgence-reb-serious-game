@@ -79,3 +79,7 @@ Version 0.2 · Modules 1 & 2 fonctionnels.
 
 Conception et développement Dr Jean-Etienne Podik · 2026.
 Toute contribution (issue, pull request, retour d'utilisation en formation) est bienvenue.
+
+## Mesure d'audience
+
+Le site public utilise Plausible (sans cookie) pour compter les pages vues, les démarrages et fins de chaque module et l'ouverture du mémo COREB. Aucun score, aucune réponse ni aucun identifiant n'est transmis. Voir [ANALYTICS.md](ANALYTICS.md).
