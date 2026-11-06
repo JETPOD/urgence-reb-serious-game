@@ -23,10 +23,12 @@ const QUESTIONS = {
 
   Q_DELAI:    { axis: "delai", label: "Depuis combien de temps les symptômes ?" },
   Q_VAX:      { axis: "expo", label: "Vaccinations à jour ? Antécédents notables ?" },
+  Q_GORGE:    { axis: "symp", label: "Mal de gorge, difficulté à avaler ?" },
+  Q_PIQURE:   { axis: "expo", label: "Piqûres de tique ou de moustique récentes ?" },
 };
 
 // ====================================================================
-// PATIENTS — 6 cas variés pour ratisser large
+// PATIENTS — banque de 14 cas ; 6 tirés au sort à chaque partie
 // Chaque patient a :
 //   - identité, motif d'accueil
 //   - vitals
@@ -37,7 +39,7 @@ const QUESTIONS = {
 //   - expected : checklist EPI/protection attendue
 //   - resolution : narration de l'agent suspecté
 // ====================================================================
-const PATIENTS = [
+const PATIENTS_BANK = [
   {
     id: 1,
     name: "Mme Diallo",
@@ -239,7 +241,298 @@ const PATIENTS = [
     },
     resolution: "Tableau bénin d'imprégnation alcoolique. Filière classique, surveillance, réhydratation. Aucune mesure REB.",
   },
+
+  // ---------------- Banque élargie v0.5 (fiches COREB 2025-2026) ----------------
+  {
+    id: 7,
+    name: "M. Haidari",
+    age: "24 ans · H",
+    motif: "Mal de gorge intense, difficulté à avaler.",
+    avatar: "MH",
+    vitals: [
+      { label: "Temp.", value: "38.3°C", alert: true },
+      { label: "FC", value: "104" },
+      { label: "TA", value: "122/70" },
+      { label: "SpO2", value: "97%" },
+    ],
+    quote: "J'ai très mal à la gorge depuis trois jours, j'ai du mal à avaler, et mon cou est gonflé. Je dors dans un campement près de Dunkerque.",
+    relevantQuestions: ["Q_GORGE", "Q_VAX", "Q_CONTACT", "Q_FIEVRE", "Q_DELAI", "Q_RESPI"],
+    reveals: {
+      Q_GORGE:   { txt: "Fausses membranes blanchâtres très adhérentes sur les amygdales, qui saignent au contact. Volumineuses adénopathies cervicales.", critical: true },
+      Q_VAX:     { txt: "Statut vaccinal inconnu, aucun carnet. Arrivé en France il y a deux mois après un long parcours migratoire.", critical: true },
+      Q_CONTACT: { txt: "Un autre occupant du campement a eu la même angine la semaine dernière.", critical: true },
+      Q_FIEVRE:  { txt: "Fièvre à 38.3°C, frissons modérés.", critical: false },
+      Q_DELAI:   { txt: "Symptômes depuis 3 jours, compatibles avec l'incubation (2 à 5 jours en moyenne).", critical: false },
+      Q_RESPI:   { txt: "Voix légèrement rauque, pas de stridor pour l'instant. À surveiller : risque d'extension laryngée.", critical: true },
+    },
+    isREB: true,
+    agent: "Suspicion de diphtérie ORL",
+    severity: "high",
+    soignantSet: ["soignant-mask"],
+    expected: {
+      must: ["patient-mask", "soignant-mask", "box-dedie", "dasri"],
+      forbidden: ["salle-attente"],
+      bonus: ["patient-sha", "gants"],
+    },
+    resolution: "Suspicion de diphtérie ORL (fiche COREB du 24/09/2026). Isolement en chambre individuelle, masque chirurgical et SHA pour le patient, masque à usage médical pour le soignant (FFP2 et lunettes seulement pour les gestes à risque d'aérosolisation). Écouvillonnage ORL en urgence, culture et PCR du gène tox, antibiothérapie dès les prélèvements faits ; sérothérapie sans attendre si atteinte cardiaque ou neurologique. Signalement ARS dès le gène tox mis en évidence, recensement des contacts (antibioprophylaxie, prélèvement de gorge, rappel vaccinal).",
+  },
+
+  {
+    id: 8,
+    name: "Mme Okafor",
+    age: "38 ans · F",
+    motif: "Fièvre progressive, mal de gorge, grande fatigue.",
+    avatar: "MO",
+    vitals: [
+      { label: "Temp.", value: "38.9°C", alert: true },
+      { label: "FC", value: "102" },
+      { label: "TA", value: "104/64" },
+      { label: "SpO2", value: "97%" },
+    ],
+    quote: "Je suis rentrée du Nigeria il y a neuf jours, j'étais dans le village de ma mère. Depuis quelques jours la fièvre monte, j'ai mal en avalant et mon visage a gonflé ce matin.",
+    relevantQuestions: ["Q_VOYAGE", "Q_ANIMAL", "Q_GORGE", "Q_FIEVRE", "Q_SAIGN", "Q_DELAI", "Q_CONTACT"],
+    reveals: {
+      Q_VOYAGE:  { txt: "Séjour de trois semaines en zone rurale, État d'Edo (Nigeria), zone d'endémie de la fièvre de Lassa.", critical: true },
+      Q_ANIMAL:  { txt: "Des rats circulaient dans la réserve de riz de la maison familiale ; elle a nettoyé leurs déjections.", critical: true },
+      Q_GORGE:   { txt: "Odynophagie, pharynx inflammatoire, œdème du visage et du cou apparu ce matin.", critical: true },
+      Q_FIEVRE:  { txt: "Fièvre d'installation progressive depuis 5 jours, céphalées, douleurs diffuses.", critical: false },
+      Q_SAIGN:   { txt: "Saignement des gencives au brossage depuis hier.", critical: true },
+      Q_DELAI:   { txt: "Retour il y a 9 jours, symptômes depuis 5 jours : compatible avec l'incubation (2 à 21 jours).", critical: false },
+      Q_CONTACT: { txt: "Pas de malade connu dans l'entourage.", critical: false },
+    },
+    isREB: true,
+    agent: "Suspicion de fièvre de Lassa (fièvre hémorragique virale)",
+    severity: "high",
+    expected: {
+      must: ["patient-mask", "ffp2", "surblouse", "gants", "lunettes", "box-dedie", "dasri", "usage-unique"],
+      forbidden: ["salle-attente"],
+      bonus: ["stop-clim", "patient-sha"],
+    },
+    resolution: "Suspicion de fièvre de Lassa (fiche COREB FHV Lassa, juillet 2026). EPI FHV complets, isolement strict. Aux urgences : aucun examen ni prélèvement, aucun geste invasif sans urgence thérapeutique, AINS et anticoagulants contre-indiqués. Triade d'expertise (infectiologue référent REB, SAMU-Centre 15, ARS) et CNR FHV pour le classement, transfert par le SAMU compétent vers l'ESR, qui réalise le diagnostic.",
+  },
+
+  {
+    id: 9,
+    name: "M. Ferrer",
+    age: "46 ans · H",
+    motif: "Fièvre brutale, courbatures, saignement de nez.",
+    avatar: "MF",
+    vitals: [
+      { label: "Temp.", value: "39.6°C", alert: true },
+      { label: "FC", value: "116" },
+      { label: "TA", value: "100/62" },
+      { label: "SpO2", value: "96%" },
+    ],
+    quote: "Je rentre d'une semaine de chasse en Estrémadure, en Espagne. La fièvre est tombée d'un coup avant-hier, j'ai vomi, et ce soir je saigne du nez.",
+    relevantQuestions: ["Q_PIQURE", "Q_ANIMAL", "Q_VOYAGE", "Q_SAIGN", "Q_FIEVRE", "Q_DIG", "Q_DELAI"],
+    reveals: {
+      Q_PIQURE:  { txt: "A retiré une grosse tique aux pattes annelées sur sa jambe il y a 5 jours.", critical: true },
+      Q_ANIMAL:  { txt: "A dépecé des lièvres à mains nues pendant le séjour.", critical: true },
+      Q_VOYAGE:  { txt: "Retour d'Estrémadure (Espagne), zone où des cas de fièvre hémorragique de Crimée-Congo sont décrits.", critical: true },
+      Q_SAIGN:   { txt: "Épistaxis ce soir, quelques ecchymoses sur les avant-bras.", critical: true },
+      Q_FIEVRE:  { txt: "Fièvre brutale à 39.6°C, syndrome pseudo-grippal intense.", critical: false },
+      Q_DIG:     { txt: "Vomissements depuis hier, diarrhée ce matin.", critical: true },
+      Q_DELAI:   { txt: "Symptômes 3 jours après la piqûre : compatible (1 à 3 jours, maximum 9 jours après piqûre de tique).", critical: false },
+    },
+    isREB: true,
+    agent: "Suspicion de fièvre hémorragique de Crimée-Congo (FHCC)",
+    severity: "high",
+    expected: {
+      must: ["patient-mask", "ffp2", "surblouse", "gants", "lunettes", "box-dedie", "dasri", "usage-unique"],
+      forbidden: ["salle-attente"],
+      bonus: ["stop-clim", "patient-sha"],
+    },
+    resolution: "Suspicion de FHCC (fiche COREB du 31/03/2026). Patient excréteur (vomissements, épistaxis) : mesures renforcées REB, EPI complets. Signes hémorragiques : classement d'emblée en cas possible. AINS et anticoagulants contre-indiqués ; traitement d'épreuve (antipaludique et/ou C3G + doxycycline) après avis de l'infectiologue référent. Triade d'expertise, CNR FHV, transfert par SAMU vers l'ESR.",
+  },
+
+  {
+    id: 10,
+    name: "M. Lefebvre",
+    age: "58 ans · H",
+    motif: "Fièvre, toux et yeux rouges.",
+    avatar: "ML",
+    vitals: [
+      { label: "Temp.", value: "38.8°C", alert: true },
+      { label: "FC", value: "98" },
+      { label: "TA", value: "134/80" },
+      { label: "SpO2", value: "94%", alert: true },
+    ],
+    quote: "Je suis éleveur de canards. Les services vétérinaires sont venus cette semaine, il y a eu de la mortalité dans mes bâtiments. Depuis hier j'ai de la fièvre, je tousse et j'ai les yeux qui piquent.",
+    relevantQuestions: ["Q_ANIMAL", "Q_PROF", "Q_RESPI", "Q_FIEVRE", "Q_DELAI", "Q_CONTACT"],
+    reveals: {
+      Q_ANIMAL:  { txt: "A ramassé des canards morts sans masque ; foyer d'influenza aviaire hautement pathogène confirmé dans l'élevage par la DDPP.", critical: true },
+      Q_PROF:    { txt: "Éleveur de volailles, exposition professionnelle directe.", critical: true },
+      Q_RESPI:   { txt: "Toux sèche, gêne respiratoire modérée, conjonctivite bilatérale.", critical: true },
+      Q_FIEVRE:  { txt: "Fièvre à 38.8°C d'apparition brutale, myalgies.", critical: false },
+      Q_DELAI:   { txt: "Symptômes 4 jours après l'exposition : compatible (moins de 10 jours).", critical: false },
+      Q_CONTACT: { txt: "Son fils travaille avec lui, sans symptôme à ce jour.", critical: false },
+    },
+    isREB: true,
+    agent: "Suspicion de grippe zoonotique A(H5N1)",
+    severity: "high",
+    expected: {
+      must: ["patient-mask", "ffp2", "surblouse", "gants", "lunettes", "box-dedie", "dasri"],
+      forbidden: ["salle-attente"],
+      bonus: ["patient-sha", "usage-unique"],
+    },
+    resolution: "Suspicion de grippe zoonotique (fiche COREB du 13/11/2025). Patient : SHA, masque chirurgical, chambre individuelle. Soignant : FFP2, gants, surblouse, lunettes, équipe dédiée sans étudiant. PCR grippe A/B avec sous-typage sur écouvillon nasopharyngé et conjonctival (test antigénique rapide inutilisable). Oseltamivir le plus tôt possible. Avis infectiologue référent REB, déclaration obligatoire à l'ARS, hospitalisation à privilégier en ESR ; prélèvements en triple emballage UN3373.",
+  },
+
+  {
+    id: 11,
+    name: "Mme Rasoanaivo",
+    age: "33 ans · F",
+    motif: "Fièvre brutale, toux, crachats sanglants.",
+    avatar: "MR",
+    vitals: [
+      { label: "Temp.", value: "39.9°C", alert: true },
+      { label: "FC", value: "124" },
+      { label: "TA", value: "96/58" },
+      { label: "SpO2", value: "91%", alert: true },
+    ],
+    quote: "Je suis rentrée de Madagascar il y a quatre jours. Là-bas, je suis allée à la veillée d'un voisin mort très vite d'une fièvre avec de la toux. Depuis hier je tousse et je crache du sang.",
+    relevantQuestions: ["Q_VOYAGE", "Q_CONTACT", "Q_RESPI", "Q_FIEVRE", "Q_ANIMAL", "Q_DELAI"],
+    reveals: {
+      Q_VOYAGE:  { txt: "Retour des hauts plateaux de Madagascar, zone d'endémie de la peste, en pleine saison épidémique.", critical: true },
+      Q_CONTACT: { txt: "Veillée funéraire d'un voisin décédé en 48 h d'une pneumopathie fébrile, contact rapproché.", critical: true },
+      Q_RESPI:   { txt: "Toux, douleur thoracique, expectorations hémoptoïques, dyspnée d'aggravation rapide.", critical: true },
+      Q_FIEVRE:  { txt: "Fièvre à 39.9°C de début brutal, frissons.", critical: false },
+      Q_ANIMAL:  { txt: "Rats morts signalés dans le village.", critical: true },
+      Q_DELAI:   { txt: "Symptômes 3 jours après le contact : compatible avec une forme pulmonaire primitive (1 à 4 jours).", critical: false },
+    },
+    isREB: true,
+    agent: "Suspicion de peste pulmonaire",
+    severity: "high",
+    soignantSet: ["soignant-mask", "gants"],
+    expected: {
+      must: ["patient-mask", "soignant-mask", "box-dedie", "dasri"],
+      forbidden: ["salle-attente"],
+      bonus: ["patient-sha", "gants", "ffp2"],
+    },
+    resolution: "Suspicion de peste pulmonaire (fiche radar COREB peste). Chambre individuelle, masque chirurgical au patient, précautions gouttelettes avec masque chirurgical pour le soignant dès l'entrée, FFP2 pour tout geste aérosolisant. Urgence thérapeutique : hémocultures et expectorations sans retarder l'antibiothérapie (fluoroquinolone IV, gentamicine si gravité) après avis de l'infectiologue référent. Déclaration obligatoire à l'ARS, transport SMUR sous régulation SAMU, prélèvements en catégorie B, prophylaxie de 7 jours pour les contacts.",
+  },
+
+  {
+    id: 12,
+    name: "M. Kouassi",
+    age: "41 ans · H",
+    motif: "Fièvre élevée et frissons depuis 2 jours.",
+    avatar: "MK",
+    vitals: [
+      { label: "Temp.", value: "39.8°C", alert: true },
+      { label: "FC", value: "112" },
+      { label: "TA", value: "118/72" },
+      { label: "SpO2", value: "98%" },
+    ],
+    quote: "Je suis rentré d'Abidjan il y a dix jours, un déplacement professionnel. Je n'ai pas pris de traitement contre le paludisme. J'ai de grosses poussées de fièvre avec des frissons.",
+    relevantQuestions: ["Q_VOYAGE", "Q_FIEVRE", "Q_CONTACT", "Q_ANIMAL", "Q_SAIGN", "Q_DELAI"],
+    reveals: {
+      Q_VOYAGE:  { txt: "Séjour de 2 semaines à Abidjan (Côte d'Ivoire), en hôtel, réunions en ville, sans chimioprophylaxie antipaludique.", critical: true },
+      Q_FIEVRE:  { txt: "Accès fébriles à 39.8°C avec frissons et sueurs, céphalées.", critical: true },
+      Q_CONTACT: { txt: "Aucun contact avec une personne malade, aucun soin, aucune cérémonie funéraire.", critical: false },
+      Q_ANIMAL:  { txt: "Aucun contact avec des animaux ou des rongeurs.", critical: false },
+      Q_SAIGN:   { txt: "Aucun saignement.", critical: false },
+      Q_DELAI:   { txt: "Fièvre depuis 48 heures, apparue 8 jours après le retour.", critical: false },
+    },
+    isREB: false,
+    agent: "Paludisme probable, sans critère d'exposition REB",
+    severity: "high",
+    nonRebNote: "Urgence diagnostique : frottis-goutte épaisse ou TDR immédiat, recherche des signes de gravité. Toute fièvre au retour de zone d'endémie est un paludisme jusqu'à preuve du contraire.",
+    expected: {
+      must: [],
+      forbidden: ["ffp2", "surblouse", "lunettes", "stop-clim", "dasri"],
+      bonus: [],
+    },
+    resolution: "Pas de critère d'exposition FHV (pas de contact malade, pas de rongeur, pas de zone d'alerte) : pas de suspicion REB, précautions standard. Mais urgence diagnostique : paludisme à P. falciparum probable, frottis-goutte épaisse ou TDR immédiat, signes de gravité, artésunate IV si paludisme grave.",
+  },
+
+  {
+    id: 13,
+    name: "Mme Lucas",
+    age: "27 ans · F",
+    motif: "Fièvre, douleurs derrière les yeux, boutons.",
+    avatar: "ML",
+    vitals: [
+      { label: "Temp.", value: "38.7°C", alert: true },
+      { label: "FC", value: "96" },
+      { label: "TA", value: "112/70" },
+      { label: "SpO2", value: "99%" },
+    ],
+    quote: "Je rentre de Guadeloupe depuis six jours. J'ai de la fièvre, très mal derrière les yeux et dans les muscles, et depuis ce matin des petits boutons rouges sur le corps.",
+    relevantQuestions: ["Q_VOYAGE", "Q_PIQURE", "Q_ERUPT", "Q_FIEVRE", "Q_SAIGN", "Q_DELAI"],
+    reveals: {
+      Q_VOYAGE:  { txt: "Séjour de 10 jours en Guadeloupe, zone de circulation de la dengue.", critical: true },
+      Q_PIQURE:  { txt: "Nombreuses piqûres de moustiques, sans répulsif.", critical: true },
+      Q_ERUPT:   { txt: "Éruption maculopapuleuse diffuse apparue au 4e jour de fièvre.", critical: true },
+      Q_FIEVRE:  { txt: "Fièvre à 38.7°C, céphalées rétro-orbitaires, myalgies, arthralgies.", critical: false },
+      Q_SAIGN:   { txt: "Aucun saignement, pas de douleur abdominale ni de vomissements.", critical: false },
+      Q_DELAI:   { txt: "Fièvre apparue 2 jours après le retour.", critical: false },
+    },
+    isREB: false,
+    agent: "Dengue probable, arbovirose sans REB",
+    severity: "medium",
+    nonRebNote: "Pas de REB, mais pas d'AINS ni d'aspirine, NFS-plaquettes, recherche des signes d'alerte. Protection contre les moustiques si vecteur actif (avis ARS).",
+    expected: {
+      must: [],
+      forbidden: ["ffp2", "surblouse", "lunettes", "stop-clim", "dasri"],
+      bonus: [],
+    },
+    resolution: "Dengue probable : arbovirose sans transmission interhumaine directe, précautions standard. Pas d'AINS ni d'aspirine, NFS-plaquettes, NS1 ou PCR, surveillance des signes d'alerte. Déclaration à l'ARS en France hexagonale pour la lutte anti-vectorielle. Penser au paludisme si séjour en zone d'endémie.",
+  },
+
+  {
+    id: 14,
+    name: "M. Girard",
+    age: "22 ans · H",
+    motif: "Fièvre, toux, yeux rouges, éruption.",
+    avatar: "MG",
+    vitals: [
+      { label: "Temp.", value: "39.4°C", alert: true },
+      { label: "FC", value: "108" },
+      { label: "TA", value: "120/74" },
+      { label: "SpO2", value: "97%" },
+    ],
+    quote: "J'ai de la fièvre et je tousse depuis quatre jours, j'ai les yeux rouges, et ce matin des plaques rouges sont apparues derrière les oreilles puis sur le visage.",
+    relevantQuestions: ["Q_ERUPT", "Q_VAX", "Q_CONTACT", "Q_FIEVRE", "Q_RESPI", "Q_DELAI"],
+    reveals: {
+      Q_ERUPT:   { txt: "Éruption maculopapuleuse débutant derrière les oreilles, descendante. Petites taches blanches à l'intérieur des joues.", critical: true },
+      Q_VAX:     { txt: "Jamais vacciné contre la rougeole (choix parental).", critical: true },
+      Q_CONTACT: { txt: "Soirée étudiante il y a 12 jours ; un participant a depuis été hospitalisé pour rougeole.", critical: true },
+      Q_FIEVRE:  { txt: "Fièvre à 39.4°C depuis 4 jours.", critical: false },
+      Q_RESPI:   { txt: "Toux sèche, rhinite, conjonctivite.", critical: false },
+      Q_DELAI:   { txt: "Éruption 12 jours après le contage : typique.", critical: false },
+    },
+    isREB: false,
+    noOverReachPenalty: true,
+    agent: "Rougeole : pas un REB COREB, précautions AIR immédiates",
+    severity: "medium",
+    nonRebNote: "Pas un REB au sens COREB, mais précautions AIR immédiates : masque chirurgical au patient, FFP2 pour le soignant, chambre individuelle porte fermée, pas de salle d'attente commune.",
+    expected: {
+      must: [],
+      forbidden: ["stop-clim", "dasri"],
+      bonus: [],
+    },
+    resolution: "Rougeole probable. Pas de procédure REB ni d'ESR, mais virus très contagieux par voie aérienne : précautions AIR (masque chirurgical au patient, FFP2 pour le soignant, chambre individuelle porte fermée, pièce aérée ou condamnée 2 h après départ). PCR salivaire ou oropharyngée, déclaration obligatoire immédiate à l'ARS, alerte EOH et santé au travail. Contacts : vaccination dans les 72 h, immunoglobulines dans les 6 jours pour les personnes à risque.",
+  },
 ];
+
+// Tirage : 6 patients par partie, dont 3 ou 4 suspicions REB.
+const PATIENTS_PER_GAME = 6;
+const ARRIVALS = ["23h17", "23h31", "00h04", "00h22", "01h08", "02h11"];
+let PATIENTS = [];
+function shuffle(a) {
+  const r = a.slice();
+  for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; }
+  return r;
+}
+function drawPatients() {
+  const reb = shuffle(PATIENTS_BANK.filter((p) => p.isREB));
+  const non = shuffle(PATIENTS_BANK.filter((p) => !p.isREB));
+  const nReb = Math.random() < 0.5 ? 3 : 4;
+  const pick = shuffle(reb.slice(0, nReb).concat(non.slice(0, PATIENTS_PER_GAME - nReb)));
+  return pick.map((p, i) => Object.assign({}, p, { arrivee: ARRIVALS[i] }));
+}
+window.PATIENTS_BANK = PATIENTS_BANK;
 
 // ====================================================================
 // ÉTAT DE JEU
@@ -364,13 +657,15 @@ const CHEAT_M1 = `
   <h5>Étape 1 · Dépister</h5>
   <ul>
     <li><strong>Triade</strong> Symptômes + Exposition + Délai d'incubation</li>
-    <li>Toute fièvre + voyage en zone à risque &lt; 21 j ⇒ alerte</li>
+    <li>Fièvre + voyage en zone à risque &lt; 21 j ⇒ rechercher une exposition</li>
+    <li>Sans exposition : penser paludisme, dengue, rougeole (non REB)</li>
     <li>Contact avec cas, animal, funéraire, soins : à rechercher</li>
   </ul>
   <h5>Étape 2 · Protéger</h5>
   <ul>
     <li>Masque chirurgical au patient + SHA</li>
     <li>EPI soignant : FFP2, sur-blouse, gants, lunettes</li>
+    <li>Adapter à l'agent : diphtérie ORL, peste pulmonaire = gouttelettes (masque à usage médical, FFP2 si geste aérosolisant)</li>
     <li>Box dédié porte fermée · ventilation/clim coupées</li>
     <li>DASRI · matériel à usage unique</li>
   </ul>
@@ -470,6 +765,8 @@ function setCheat(module) {
 window.setCheat = setCheat;
 
 function startGame() {
+  PATIENTS = drawPatients();
+  window.PATIENTS = PATIENTS;
   state.patientIndex = 0;
   state.scores = { vigilance: 0, protection: 0, delai: 0, pratiques: 0 };
   state.patientResults = [];
@@ -722,7 +1019,7 @@ function finalizePatient(timedOut = false) {
 
       // Pratiques : cohérence patient + soignant + environnement
       const hasPatientMeasure = chosen.has("patient-mask");
-      const hasSoignantEPI = ["ffp2", "surblouse", "gants"].every((x) => chosen.has(x));
+      const hasSoignantEPI = (p.soignantSet || ["ffp2", "surblouse", "gants"]).every((x) => chosen.has(x));
       const hasEnvIsolement = chosen.has("box-dedie");
       const triple = [hasPatientMeasure, hasSoignantEPI, hasEnvIsolement].filter(Boolean).length;
       prat = (triple / 3) * PER_PATIENT;
@@ -735,14 +1032,16 @@ function finalizePatient(timedOut = false) {
     if (state.decision === "non-reb") {
       prot = PER_PATIENT;
       prat = PER_PATIENT;
-      feedback.ok.push("Pas de sur-protection inutile sur un patient non REB.");
+      if (!p.noOverReachPenalty) feedback.ok.push("Pas de sur-protection inutile sur un patient non REB.");
+      if (p.nonRebNote) feedback.warn.push(p.nonRebNote);
     } else if (state.decision === "suspect-reb") {
       // sur-réaction : ne pas pénaliser trop, c'est mieux que de rater
       const chosen = new Set(state.protectionChoices);
-      const overReach = ["ffp2", "surblouse"].filter((x) => chosen.has(x)).length;
+      const overReach = p.noOverReachPenalty ? 0 : ["ffp2", "surblouse"].filter((x) => chosen.has(x)).length;
       prot = Math.max(0, PER_PATIENT * 0.4 - overReach * PER_PATIENT * 0.1);
       prat = PER_PATIENT * 0.5;
       feedback.warn.push("Sur-réaction. Le tableau ne justifiait pas une procédure REB complète, mais la vigilance reste valorisée.");
+      if (p.nonRebNote) feedback.warn.push(p.nonRebNote);
     }
   }
 
@@ -801,6 +1100,7 @@ function prettyTag(tag) {
   const map = {
     "patient-mask": "masque chirurgical au patient",
     "patient-sha": "SHA pour le patient",
+    "soignant-mask": "masque à usage médical pour le soignant",
     "ffp2": "APR FFP2",
     "surblouse": "sur-blouse",
     "gants": "gants",

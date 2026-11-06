@@ -89,3 +89,7 @@ Le site public utilise Plausible (sans cookie) pour compter les pages vues, les 
 Les chronomètres des trois modules sont désactivés pour le moment. Pour les réactiver, passer `window.REB_TIMERS_ENABLED = true` en tête de la section helpers de `game.js`.
 
 Sans chronomètre : l'axe « Délai » du module 1 devient « Orientation » (points accordés pour une orientation juste) ; le module 2 n'a plus de finalisation automatique ; dans le module 3, les appels arrivent au fil des tâches validées, sans pénalité de délai ni bonus de rapidité, et la garde se termine une fois les 12 tâches faites et tous les appels traités.
+
+## Banque de cas du module 1 (v0.5)
+
+14 cas, dont 6 tirés au sort à chaque partie (3 ou 4 suspicions REB). Suspicions REB : Ebola Bundibugyo, Mpox clade I, MERS-CoV, diphtérie ORL, fièvre de Lassa, FHCC, grippe zoonotique A(H5N1), peste pulmonaire. Diagnostics différentiels : syndrome coronarien, gastro-entérite, céphalées, paludisme, dengue, rougeole (précautions air, hors REB COREB). Sources : fiches COREB diphtérie (24/09/2026), Lassa (31/07/2026), FHCC (31/03/2026), grippes zoonotiques (13/11/2025), fiche radar peste.
