@@ -29,7 +29,7 @@
     </div>
   </div>
   <div class="header-meta">
-    <span class="pill">Prototype v0.3</span>
+    <span class="pill">Prototype v0.4</span>
     <span class="pill pill-muted">Doctrine COREB</span>
   </div>
 </header>
@@ -148,7 +148,7 @@
       <li>Graduez chaque contact (étroit A / occasionnel B / faible C / non-contact) pour le suivi (21 jours Ebola et Mpox, 14 jours MERS-CoV).</li>
       <li>Répondez, différez ou rejetez les appels entrants selon leur criticité.</li>
     </ol>
-    <p class="hint">Un chronomètre court par étape — réagir vite et juste rapporte plus de points. Une fiche-mémo COREB reste accessible en bas à droite.</p>
+    <p class="hint"><span class="only-timers">Un chronomètre court par étape : réagir vite et juste rapporte plus de points. </span>Une fiche-mémo COREB reste accessible en bas à droite.</p>
     <div class="modal-actions">
       <button class="btn btn-primary" id="btn-howto-close">J'ai compris</button>
     </div>
@@ -172,7 +172,7 @@
       <div class="scores">
         <div class="score-item"><span class="score-label">Vigilance</span><span class="score-value" id="score-vigilance">0</span></div>
         <div class="score-item"><span class="score-label">Protection</span><span class="score-value" id="score-protection">0</span></div>
-        <div class="score-item"><span class="score-label">Délai</span><span class="score-value" id="score-delai">0</span></div>
+        <div class="score-item"><span class="score-label"><span class="only-timers">Délai</span><span class="only-notimers">Orientation</span></span><span class="score-value" id="score-delai">0</span></div>
         <div class="score-item"><span class="score-label">Pratiques</span><span class="score-value" id="score-pratiques">0</span></div>
       </div>
     </div>
@@ -503,7 +503,7 @@
         <div class="panel-sub" id="m3-calls-count">0 en attente</div>
       </div>
       <div class="m3-call-list" id="m3-call-list"></div>
-      <div class="m3-call-hint">Un appel critique différé plus de 90 s pénalise l'axe Priorisation.</div>
+      <div class="m3-call-hint"><span class="only-timers">Un appel critique différé plus de 90 s pénalise l'axe Priorisation.</span><span class="only-notimers">Un nouvel appel arrive au fil des tâches validées. Traitez-les tous avant de terminer la garde.</span></div>
     </section>
   </div>
 
@@ -599,7 +599,7 @@
       <div class="score-breakdown">
         <div class="breakdown-row"><span>Vigilance</span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-vigilance"></div></div><span class="breakdown-val" id="val-vigilance">0/25</span></div>
         <div class="breakdown-row"><span>Protection</span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-protection"></div></div><span class="breakdown-val" id="val-protection">0/25</span></div>
-        <div class="breakdown-row"><span>Délai</span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-delai"></div></div><span class="breakdown-val" id="val-delai">0/25</span></div>
+        <div class="breakdown-row"><span><span class="only-timers">Délai</span><span class="only-notimers">Orientation</span></span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-delai"></div></div><span class="breakdown-val" id="val-delai">0/25</span></div>
         <div class="breakdown-row"><span>Bonnes pratiques</span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-pratiques"></div></div><span class="breakdown-val" id="val-pratiques">0/25</span></div>
       </div>
     </div>

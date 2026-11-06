@@ -322,8 +322,19 @@ function m3Toast(msg, kind = "") {
 // TIMER GLOBAL 12 min
 // ====================================================================
 
+const M3_TIMERS_ON = () => window.REB_TIMERS_ENABLED === true;
+// Sans chronomètre : un appel arrive après N tâches validées.
+const M3_CALL_AFTER_TASKS = { samu: 0, biolo: 1, direction: 2, eoh: 3, presse: 5, infectio: 6, famille: 8, ars: 9 };
+// Sans chronomètre : barème rééquilibré pour qu'un tri parfait atteigne 25.
+const M3_CALL_POINTS_NOTIMER = {
+  answer: { critical:  3.5, secondary: -0.5, noise: -1.5 },
+  defer:  { critical: -1.0, secondary:  2.5, noise:  0.4 },
+  reject: { critical: -2.0, secondary: -0.4, noise:  2.5 }
+};
+
 function m3StartTimer() {
   m3StopTimer();
+  if (!M3_TIMERS_ON()) { m3TickCalls(); return; }
   m3TimerHandle = setInterval(() => {
     if (!m3State || m3State.ended) return;
     m3State.elapsed += 1;
@@ -356,7 +367,8 @@ function m3UpdateTimerUI() {
 function m3TickCalls() {
   // Faire naître les nouveaux appels
   M3_CALLS.forEach((def) => {
-    if (m3State.elapsed >= def.spawnAt && !m3State.spawnedCalls.has(def.id)) {
+    const due = M3_TIMERS_ON() ? m3State.elapsed >= def.spawnAt : m3TasksDone() >= (M3_CALL_AFTER_TASKS[def.id] || 0);
+    if (due && !m3State.spawnedCalls.has(def.id)) {
       m3State.spawnedCalls.add(def.id);
       m3State.calls.push({
         id: def.id,
@@ -368,9 +380,9 @@ function m3TickCalls() {
     }
   });
 
-  // Vérifier les critiques en attente > 90 s
+  // Vérifier les critiques en attente > 90 s (mode chronométré uniquement)
   m3State.calls.forEach((c) => {
-    if (c.resolvedAt !== null) return;
+    if (!M3_TIMERS_ON() || c.resolvedAt !== null) return;
     const def = M3_CALLS.find((d) => d.id === c.id);
     if (!def) return;
     const age = m3State.elapsed - c.spawnedAt;
@@ -394,13 +406,13 @@ function m3ResolveCall(callId, action) {
   c.resolvedAt = m3State.elapsed;
   c.resolution = action;
 
-  const pts = M3_CALL_POINTS[action][def.crit] || 0;
+  const pts = (M3_TIMERS_ON() ? M3_CALL_POINTS : M3_CALL_POINTS_NOTIMER)[action][def.crit] || 0;
   m3State.scores.prio = Math.min(M3_AXIS_MAX, Math.max(0, m3State.scores.prio + pts));
   m3State.resolved += 1;
 
   const ok = def.correct === action;
   const label = { answer: "Répondu", defer: "Différé", reject: "Rejeté" }[action] || action;
-  m3Toast(`${def.who} · ${label}${ok ? " · +" : " · "}${pts > 0 ? "+" : ""}${pts.toFixed(1)} pt`, ok ? "ok" : "warn");
+  m3Toast(`${def.who} · ${label} · ${pts > 0 ? "+" : ""}${pts.toFixed(1)} pt`, ok ? "ok" : "warn");
 
   m3UpdateScoresUI();
   m3RenderCalls();
@@ -426,7 +438,7 @@ function m3RenderCalls() {
       <div class="m3-call m3-call-${def.crit}" data-call="${c.id}">
         <div class="m3-call-header">
           <div class="m3-call-who">${def.who}</div>
-          <div class="m3-call-age ${ageWarn ? "m3-call-age-warn" : ""}">+${m3Fmt(age)}</div>
+          ${M3_TIMERS_ON() ? `<div class="m3-call-age ${ageWarn ? "m3-call-age-warn" : ""}">+${m3Fmt(age)}</div>` : ""}
         </div>
         <div class="m3-call-object">${def.object}</div>
         <div class="m3-call-actions">
@@ -471,13 +483,16 @@ function m3UpdateProgress() {
   const done = m3TasksDone();
   m3$("#m3-tasks-done").textContent = done;
   m3$("#m3-progress-fill").style.width = (done / 12 * 100) + "%";
+  if (!M3_TIMERS_ON()) m3TickCalls();
   m3CheckEndAvailability();
 }
 
 function m3CheckEndAvailability() {
   // Toutes les tâches faites OU délai écoulé permet de terminer.
   const done = m3TasksDone();
-  m3$("#m3-btn-end").disabled = !(done >= 12);
+  const pending = m3State.calls.filter((c) => c.resolvedAt === null).length;
+  const allCalls = M3_TIMERS_ON() || (m3State.spawnedCalls.size === M3_CALLS.length && pending === 0);
+  m3$("#m3-btn-end").disabled = !(done >= 12 && allCalls);
 }
 
 // ====================================================================
@@ -962,7 +977,7 @@ function m3EndModule(fromTimeout) {
   // Bonus terminaison rapide : si finalisé avant 10 min et 100% tâches faites, +2 sur prio
   const done = m3TasksDone();
   const timeUsed = m3State.elapsed;
-  if (!fromTimeout && done === 12 && timeUsed < 600) {
+  if (M3_TIMERS_ON() && !fromTimeout && done === 12 && timeUsed < 600) {
     m3State.scores.prio = Math.min(M3_AXIS_MAX, m3State.scores.prio + 2);
   }
 

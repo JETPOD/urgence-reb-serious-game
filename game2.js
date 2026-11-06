@@ -349,6 +349,7 @@ function m2LoadPatient(i) {
 
 function m2StartTimer() {
   if (m2State.timerId) clearInterval(m2State.timerId);
+  if (window.REB_TIMERS_ENABLED !== true) return;
   m2UpdateTimerUI();
   m2State.timerId = setInterval(() => {
     m2State.timeLeft--;

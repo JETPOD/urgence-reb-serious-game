@@ -83,3 +83,9 @@ Toute contribution (issue, pull request, retour d'utilisation en formation) est 
 ## Mesure d'audience
 
 Le site public utilise Plausible (sans cookie) pour compter les pages vues, les démarrages et fins de chaque module et l'ouverture du mémo COREB. Aucun score, aucune réponse ni aucun identifiant n'est transmis. Voir [ANALYTICS.md](ANALYTICS.md).
+
+## Chronomètres (v0.4)
+
+Les chronomètres des trois modules sont désactivés pour le moment. Pour les réactiver, passer `window.REB_TIMERS_ENABLED = true` en tête de la section helpers de `game.js`.
+
+Sans chronomètre : l'axe « Délai » du module 1 devient « Orientation » (points accordés pour une orientation juste) ; le module 2 n'a plus de finalisation automatique ; dans le module 3, les appels arrivent au fil des tâches validées, sans pénalité de délai ni bonus de rapidité, et la garde se termine une fois les 12 tâches faites et tous les appels traités.

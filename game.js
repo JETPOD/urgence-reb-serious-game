@@ -260,6 +260,14 @@ const state = {
   badges: new Set(),
 };
 
+// Chronomètres désactivés pour le moment (v0.4).
+// Passer à true pour réactiver les timers des modules 1, 2 et 3.
+window.REB_TIMERS_ENABLED = false;
+const TIMERS_ON = () => window.REB_TIMERS_ENABLED === true;
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.classList.toggle("timers-off", !TIMERS_ON());
+});
+
 const MAX_QUESTIONS = 3;
 const PATIENT_TIME = 60;
 
@@ -603,6 +611,7 @@ $("#btn-next-patient").addEventListener("click", () => {
 
 function startTimer() {
   clearInterval(state.timer);
+  if (!TIMERS_ON()) return;
   updateTimerUI();
   state.timer = setInterval(() => {
     state.timeLeft -= 1;
@@ -738,7 +747,11 @@ function finalizePatient(timedOut = false) {
   }
 
   // === DÉLAI : récompenser la rapidité quand la décision est juste ===
-  if (decisionCorrect) {
+  if (decisionCorrect && !TIMERS_ON()) {
+    // Sans chronomètre : l'axe valorise la décision d'orientation juste.
+    delai = PER_PATIENT;
+    feedback.ok.push("Orientation juste.");
+  } else if (decisionCorrect) {
     // Plus c'est rapide, plus on gagne. 100% si <20s, 0% si timedOut.
     const pct = timedOut ? 0 : Math.max(0, Math.min(1, (state.totalTime - timeUsed) / (state.totalTime - 15)));
     delai = pct * PER_PATIENT;
@@ -773,7 +786,7 @@ function finalizePatient(timedOut = false) {
   });
 
   // Badges
-  if (p.isREB && decisionCorrect && timeUsed < 30) state.badges.add("Sentinelle rapide");
+  if (TIMERS_ON() && p.isREB && decisionCorrect && timeUsed < 30) state.badges.add("Sentinelle rapide");
   if (decisionCorrect && state.patientResults.filter((r) => r.decisionCorrect).length >= 3) state.badges.add("Tri sans faute");
   if (p.isREB && decisionCorrect && state.protectionChoices.includes("ffp2") && state.protectionChoices.includes("box-dedie")) {
     state.badges.add("EPI conforme");
@@ -917,7 +930,7 @@ function showDebrief() {
       <div class="replay-num">${i + 1}</div>
       <div class="replay-info">
         <div class="replay-name">${r.patient.name} <span style="font-weight:500; color: var(--c-text-muted); font-size:0.82rem">· ${r.patient.agent}</span></div>
-        <div class="replay-summary">Décision : ${decisionLabel} · ${correctLabel} · ${Math.round(r.timeUsed)}s</div>
+        <div class="replay-summary">Décision : ${decisionLabel} · ${correctLabel}${TIMERS_ON() ? " · " + Math.round(r.timeUsed) + "s" : ""}</div>
       </div>
       <div class="replay-score">${Math.round(r.pointsTotal)}</div>
     `;
@@ -933,7 +946,7 @@ $("#btn-restart").addEventListener("click", () => {
 $("#btn-share-results").addEventListener("click", () => {
   const total = Math.round(state.scores.vigilance + state.scores.protection + state.scores.delai + state.scores.pratiques);
   const txt = `URGENCE REB · Module 1 — Score ${total}/100 · ${$("#score-grade").textContent}\n` +
-    `Vigilance ${Math.round(state.scores.vigilance)}/25 · Protection ${Math.round(state.scores.protection)}/25 · Délai ${Math.round(state.scores.delai)}/25 · Pratiques ${Math.round(state.scores.pratiques)}/25`;
+    `Vigilance ${Math.round(state.scores.vigilance)}/25 · Protection ${Math.round(state.scores.protection)}/25 · ${TIMERS_ON() ? "Délai" : "Orientation"} ${Math.round(state.scores.delai)}/25 · Pratiques ${Math.round(state.scores.pratiques)}/25`;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(txt).then(() => toast("Résumé copié.", "success"));
   } else {

@@ -2581,3 +2581,9 @@ a { color: var(--c-secondary); }
   0% { background: var(--c-accent-soft); }
   100% { background: transparent; }
 }
+
+/* Chronomètres désactivés (v0.4) : voir window.REB_TIMERS_ENABLED dans game.js */
+.only-notimers { display: none; }
+body.timers-off .only-notimers { display: inline; }
+body.timers-off .only-timers { display: none; }
+body.timers-off .timer { display: none !important; }
