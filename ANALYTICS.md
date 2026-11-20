@@ -27,3 +27,19 @@ Les événements ne sont pas rétroactifs : créer les objectifs avant de diffus
 ## Confidentialité
 
 Plausible fonctionne sans cookie ni identifiant persistant ([politique de données](https://plausible.io/data-policy)). Le fichier `analytics.js` applique un schéma fermé : tout événement hors liste est bloqué, l'URL est réduite à l'origine et au chemin, le référent est supprimé. Aucun score, aucune réponse ni aucun identifiant d'apprenant n'est transmis.
+
+## Attestation de fin de parcours
+
+Le module commun `attestation.js` propose, à la fin d'un module ou d'un parcours complet, une attestation nominative imprimable (A4 paysage, impression ou PDF via le navigateur). Elle n'affiche que le palier atteint, jamais le score :
+
+- **Réussite avec excellence** : au moins 95 % de réponses adaptées, sans erreur critique ;
+- **Réussite** : au moins 80 %, sans erreur critique (seuil de réussite) ;
+- **Participation** : en dessous du seuil.
+
+Signature : Dr Jean-Etienne Podik, EOH AHNAC. Mention : outil pédagogique à partir de cas fictifs, sans valeur de validation des compétences ni d'action de DPC. Le nom saisi reste sur l'appareil ; seul l'événement de palier est compté par Plausible, commun à tous les jeux du site (filtrer par page pour un jeu donné) :
+
+```
+Attestation · Participation
+Attestation · Réussite
+Attestation · Excellence
+```

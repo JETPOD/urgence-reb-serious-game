@@ -93,3 +93,19 @@ Sans chronomètre : l'axe « Délai » du module 1 devient « Orientation » (po
 ## Banque de cas du module 1 (v0.5)
 
 14 cas, dont 6 tirés au sort à chaque partie (3 ou 4 suspicions REB). Suspicions REB : Ebola Bundibugyo, Mpox clade I, MERS-CoV, diphtérie ORL, fièvre de Lassa, FHCC, grippe zoonotique A(H5N1), peste pulmonaire. Diagnostics différentiels : syndrome coronarien, gastro-entérite, céphalées, paludisme, dengue, rougeole (précautions air, hors REB COREB). Sources : fiches COREB diphtérie (24/09/2026), Lassa (31/07/2026), FHCC (31/03/2026), grippes zoonotiques (13/11/2025), fiche radar peste.
+
+## Attestation de fin de parcours
+
+Le module commun `attestation.js` propose, à la fin d'un module ou d'un parcours complet, une attestation nominative imprimable (A4 paysage, impression ou PDF via le navigateur). Elle n'affiche que le palier atteint, jamais le score :
+
+- **Réussite avec excellence** : au moins 95 % de réponses adaptées, sans erreur critique ;
+- **Réussite** : au moins 80 %, sans erreur critique (seuil de réussite) ;
+- **Participation** : en dessous du seuil.
+
+Signature : Dr Jean-Etienne Podik, EOH AHNAC. Mention : outil pédagogique à partir de cas fictifs, sans valeur de validation des compétences ni d'action de DPC. Le nom saisi reste sur l'appareil ; seul l'événement de palier est compté par Plausible, commun à tous les jeux du site (filtrer par page pour un jeu donné) :
+
+```
+Attestation · Participation
+Attestation · Réussite
+Attestation · Excellence
+```

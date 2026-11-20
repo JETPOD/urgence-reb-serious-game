@@ -3,7 +3,7 @@
    Aucun score individuel, aucune réponse, aucun identifiant d'apprenant.
    Le script Plausible n'est chargé que sur le site public GitHub Pages. */
 (() => {
-  const ALLOWED = /^(pageview|engagement|REB Module [123] (démarré|terminé)|REB Mémo COREB ouvert)$/;
+  const ALLOWED = /^(pageview|engagement|Attestation · (Participation|Réussite|Excellence)|REB Module [123] (démarré|terminé)|REB Mémo COREB ouvert)$/;
   const PATH = "/urgence-reb-serious-game/";
 
   window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments); };

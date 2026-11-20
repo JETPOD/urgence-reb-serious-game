@@ -567,7 +567,8 @@
       </a>
     </div>
     <div class="debrief-cta">
-      <button class="btn btn-primary" id="m3-btn-restart">Retour à l'accueil</button>
+      <button class="btn btn-primary" data-reb-att="3">Obtenir mon attestation</button>
+      <button class="btn btn-ghost" id="m3-btn-restart">Retour à l'accueil</button>
       <button class="btn btn-ghost" id="m3-btn-replay">Rejouer le module 3</button>
     </div>
   </div>
@@ -640,6 +641,7 @@
       </a>
     </div>
     <div class="debrief-cta">
+      <button class="btn btn-primary" data-reb-att="1">Obtenir mon attestation</button>
       <button class="btn btn-ghost" id="btn-restart">Retour à l'accueil</button>
       <button class="btn btn-ghost" id="btn-share-results">Copier le résumé</button>
     </div>
@@ -689,7 +691,8 @@
       </a>
     </div>
     <div class="debrief-cta">
-      <button class="btn btn-primary" id="m2-btn-restart">Retour à l'accueil</button>
+      <button class="btn btn-primary" data-reb-att="2">Obtenir mon attestation</button>
+      <button class="btn btn-ghost" id="m2-btn-restart">Retour à l'accueil</button>
       <button class="btn btn-ghost" id="m2-btn-replay">Rejouer le module 2</button>
     </div>
   </div>
@@ -705,5 +708,15 @@
 <script src="game.js"></script>
 <script src="game2.js"></script>
 <script src="game3.js"></script>
+<script src="attestation.js"></script>
+<script>
+  /* Attestation de fin de module : score lu sur l'écran de debrief (sur 100), jamais transmis. */
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-reb-att]"); if (!b) return;
+    const n = b.dataset.rebAtt, ids = { 1: "total-score", 2: "m2-total-score", 3: "m3-total-score" }, titres = { 1: "Le Repérage", 2: "La Triade", 3: "La Filière" };
+    const total = Number((document.getElementById(ids[n]) || {}).textContent) || 0;
+    window.SGAttestation && window.SGAttestation.open({ jeu: "Urgence REB", module: `module ${n} : ${titres[n]}`, code: "REB", color: "#047857", ratio: total / 100, critical: null, track: (ev) => window.urgenceRebAnalytics && window.urgenceRebAnalytics.track(ev) });
+  });
+</script>
 </body>
 </html>
