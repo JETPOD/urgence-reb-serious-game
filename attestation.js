@@ -100,15 +100,30 @@
   }
 
   function print(o, k, name, fn) {
-    let box = document.getElementById("sga-print");
-    if (!box) { box = document.createElement("div"); box.id = "sga-print"; document.body.appendChild(box); }
+    if (document.getElementById("sga-print")) return;
+    const box = document.createElement("div");
+    box.id = "sga-print";
     box.innerHTML = docHTML(o, k, name, fn);
+    document.body.appendChild(box);
     const root = document.documentElement;
     root.classList.add("sga-printing");
-    const done = () => { root.classList.remove("sga-printing"); window.removeEventListener("afterprint", done); };
-    window.addEventListener("afterprint", done);
     try { const t = typeof o.track === "function" ? o.track : (n) => { if (typeof window.plausible === "function") window.plausible(n); }; t(PALIERS[k].event); } catch { /* Ne jamais bloquer le jeu. */ }
-    setTimeout(() => { try { window.print(); } catch { /* impression indisponible */ } setTimeout(done, 1500); }, 80);
+    setTimeout(() => {
+      // Sans afterprint, attendre la sortie du mode impression.
+      const media = "onafterprint" in window ? null : window.matchMedia("print");
+      const onPrintMediaChange = (event) => { if (!event.matches) done(); };
+      const done = () => {
+        box.remove();
+        root.classList.remove("sga-printing");
+        window.removeEventListener("afterprint", done);
+        window.removeEventListener("pagehide", done);
+        media?.removeListener(onPrintMediaChange);
+      };
+      window.addEventListener("afterprint", done);
+      window.addEventListener("pagehide", done);
+      media?.addListener(onPrintMediaChange);
+      try { window.print(); } catch { done(); }
+    }, 80);
   }
 
   function open(o) {
