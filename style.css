@@ -463,6 +463,11 @@ a { color: var(--c-secondary); }
   .timer-value { font-size: 0.92rem; }
 }
 
+@media (max-width: 480px) {
+  #screen-game2 .scores { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #screen-game2 .score-label { font-size: 0.62rem; }
+}
+
 @media (max-width: 720px) {
   .game-area { padding: 16px; gap: 14px; }
   .panel { padding: 16px; }

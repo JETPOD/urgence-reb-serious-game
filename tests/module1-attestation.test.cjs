@@ -195,8 +195,10 @@ function openAttestationWithPalier(game, module, label) {
 
 test("module 2 : palier et libellé conservés", async (t) => {
   const game = await openGame(t);
-  game.find("#m2-total-score").textContent = "80";
-  game.run('showScreen("screen-debrief2")');
+  game.run(`
+    Object.assign(m2State.scores, { eval: 20, traitement: 20, comm: 20, triade: 13, classement: 7 });
+    m2EndModule();
+  `);
   printAttestation(game, openAttestationWithPalier(game, 2, "Réussite"));
   assert.match(game.find("#sga-print").textContent, /module 2 : La Triade/);
 });

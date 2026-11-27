@@ -5,9 +5,9 @@
 // ====================================================================
 
 const M2_PATIENT_TIME = 90; // secondes
-const M2_PER_AXIS_MAX = 25; // 4 axes × 25 = 100
-// Par patient : 25/3 ≈ 8.33 pts max par axe
-const M2_PER_PATIENT = M2_PER_AXIS_MAX / 3;
+const M2_AXIS_MAX = { eval: 20, traitement: 20, comm: 20, triade: 19, classement: 21 };
+const M2_EMPTY_SCORES = { eval: 0, traitement: 0, comm: 0, triade: 0, classement: 0 };
+const M2_CLASSIFICATION_LABELS = { exclu: "Cas exclu", suspect: "Reste suspect", possible: "Cas possible" };
 
 // ====================================================================
 // DONNÉES PATIENTS
@@ -241,7 +241,8 @@ const M2_CONTACTS = [
 
 const m2State = {
   patientIndex: 0,
-  scores: { eval: 0, traitement: 0, comm: 0, triade: 0 },
+  scores: { ...M2_EMPTY_SCORES },
+  attestation: null,
   patientResults: [],
   badges: new Set(),
   // état courant
@@ -275,10 +276,9 @@ function m2ShowPhase(name) {
 }
 
 function m2UpdateScoresUI() {
-  m2$("#m2-score-eval").textContent = Math.round(m2State.scores.eval);
-  m2$("#m2-score-traitement").textContent = Math.round(m2State.scores.traitement);
-  m2$("#m2-score-comm").textContent = Math.round(m2State.scores.comm);
-  m2$("#m2-score-triade").textContent = Math.round(m2State.scores.triade);
+  for (const [axis, score] of Object.entries(m2State.scores)) {
+    m2$(`#m2-score-${axis}`).textContent = Math.round(score);
+  }
 }
 
 // ====================================================================
@@ -287,7 +287,8 @@ function m2UpdateScoresUI() {
 
 function startModule2() {
   m2State.patientIndex = 0;
-  m2State.scores = { eval: 0, traitement: 0, comm: 0, triade: 0 };
+  m2State.scores = { ...M2_EMPTY_SCORES };
+  m2State.attestation = null;
   m2State.patientResults = [];
   m2State.badges = new Set();
   m2UpdateScoresUI();
@@ -309,7 +310,7 @@ function m2LoadPatient(i) {
   m2State.classement = null;
   m2State.timeLeft = M2_PATIENT_TIME;
   m2State.totalTime = M2_PATIENT_TIME;
-  m2State.phaseScores = { eval: 0, traitement: 0, comm: 0, triade: 0 };
+  m2State.phaseScores = { ...M2_EMPTY_SCORES };
 
   // UI patient
   m2$("#m2-patient-index").textContent = i + 1;
@@ -423,9 +424,8 @@ m2$("#btn-validate-qsofa").addEventListener("click", () => {
   const expected = p.qsofa;
   let exact = 0;
   ["tas", "fr", "conf"].forEach((k) => { if (c[k] === expected[k]) exact++; });
-  // Score: 8.33 max si parfait
   const ratio = exact / 3;
-  const gained = M2_PER_PATIENT * ratio;
+  const gained = (M2_AXIS_MAX.eval / M2_PATIENTS.length / 2) * ratio;
   m2State.phaseScores.eval = gained;
   m2State.scores.eval += gained;
   m2UpdateScoresUI();
@@ -488,28 +488,12 @@ m2$("#btn-validate-examens").addEventListener("click", () => {
   };
   const rEx = evaluateList(p.examens, m2State.examensChoices, p.examensExpected);
   const rTx = evaluateList(p.treatments, m2State.treatmentsChoices, p.treatmentsExpected);
-  // 1/2 du score traitement = examens (évaluation) + 1/2 = traitements (traitement)
-  // En réalité examens compte pour l'axe ÉVALUATION (complète qSOFA) et traitements pour TRAITEMENT
-  const gainedEval = (M2_PER_PATIENT * 0.5) * rEx; // demi-poids car qSOFA a déjà compté
-  // Mais pour rester cohérent, on simplifie : examens → axe Évaluation; traitements → axe Traitement, chacun M2_PER_PATIENT max
-  // Redéfinissons proprement :
-  const gainedEval2 = M2_PER_PATIENT * rEx;
-  const gainedTx = M2_PER_PATIENT * rTx;
-  // On veut conserver le score qSOFA déjà attribué, donc on ajoute les examens à part : 50/50
-  // Pour ne pas dépasser, on attribue : examens = bonus complémentaire à eval (moitié de M2_PER_PATIENT)
-  // Et traitement axe propre = gainedTx
-  // Recap axes : eval (qSOFA 8.33 max + examens 8.33 max) → mais on a déjà ajouté qSOFA en M2_PER_PATIENT.
-  // Simplification : qSOFA = 50% de M2_PER_PATIENT, examens = 50% de M2_PER_PATIENT
-  // On corrige rétroactivement le qSOFA déjà ajouté.
-  const qsofaCorrected = m2State.phaseScores.eval * 0.5;
-  const delta = qsofaCorrected - m2State.phaseScores.eval; // négatif
-  m2State.scores.eval += delta; // on retire la moitié déjà comptée
-  m2State.phaseScores.eval = qsofaCorrected;
-
-  const examGain = (M2_PER_PATIENT * 0.5) * rEx;
+  // Le qSOFA et les examens comptent chacun pour la moitié de l’évaluation.
+  const examGain = (M2_AXIS_MAX.eval / M2_PATIENTS.length / 2) * rEx;
   m2State.phaseScores.eval += examGain;
   m2State.scores.eval += examGain;
 
+  const gainedTx = (M2_AXIS_MAX.traitement / M2_PATIENTS.length) * rTx;
   m2State.phaseScores.traitement = gainedTx;
   m2State.scores.traitement += gainedTx;
 
@@ -590,7 +574,7 @@ m2$("#btn-validate-sbar").addEventListener("click", () => {
     else raw += 0;
   });
   const ratio = raw / SBAR_SECTIONS.length;
-  const gained = M2_PER_PATIENT * ratio;
+  const gained = (M2_AXIS_MAX.comm / M2_PATIENTS.length) * ratio;
   m2State.phaseScores.comm = gained;
   m2State.scores.comm += gained;
   m2UpdateScoresUI();
@@ -690,7 +674,7 @@ m2$("#btn-validate-triade").addEventListener("click", () => {
   });
   // Max théorique : 1.5 + 1.5 = 3
   const ratio = Math.max(0, Math.min(1, raw / 3));
-  const gained = M2_PER_PATIENT * ratio;
+  const gained = (M2_AXIS_MAX.triade / M2_PATIENTS.length) * ratio;
   m2State.phaseScores.triade = gained;
   m2State.scores.triade += gained;
   m2UpdateScoresUI();
@@ -710,7 +694,8 @@ function m2ResetClassementUI() {
 
 m2$$("#phase-classement .classement-card").forEach((card) => {
   card.addEventListener("click", () => {
-    m2$$("#phase-classement .classement-card").forEach((c) => c.classList.remove("classement-active"));
+    if (m2State.classement !== null || m2State.patientResults.length !== m2State.patientIndex) return;
+    m2StopTimer();
     card.classList.add("classement-active");
     m2State.classement = card.dataset.class;
     // Petit délai puis on enchaîne sur feedback
@@ -725,14 +710,11 @@ m2$$("#phase-classement .classement-card").forEach((card) => {
 function m2GotoFeedback(fromTimeout) {
   m2StopTimer();
   const p = M2_PATIENTS[m2State.patientIndex];
-  // Bonus rapidité : si fini en < 60s avec score correct, +5% sur le total patient
-  // Simplifié : pas de bonus pour le moment.
-
-  // Bonus classement correct : +20% sur l'axe triade
-  if (m2State.classement === p.classement) {
-    const bonus = m2State.phaseScores.triade * 0.2;
-    m2State.scores.triade += bonus;
-    m2State.phaseScores.triade += bonus;
+  const classificationCorrect = m2State.classement === p.classement;
+  if (classificationCorrect) {
+    const points = M2_AXIS_MAX.classement / M2_PATIENTS.length;
+    m2State.phaseScores.classement = points;
+    m2State.scores.classement += points;
     m2UpdateScoresUI();
   }
 
@@ -787,9 +769,10 @@ function m2GotoFeedback(fromTimeout) {
     return `<li class="fb-ko">Position ${idx + 1} attendue : ${labelMap[id]}</li>`;
   });
 
-  const classementBlock = m2State.classement === p.classement
+  const classification = M2_CLASSIFICATION_LABELS[m2State.classement] || "Non renseigné";
+  const classementBlock = classificationCorrect
     ? `<p class="fb-success">Classement <strong>correct</strong>. ${p.classementExplain}</p>`
-    : `<p class="fb-warn">Classement <strong>discutable</strong>. Réponse attendue : <strong>${p.classement === "exclu" ? "Cas exclu" : (p.classement === "suspect" ? "Reste suspect" : "Cas possible")}</strong>. ${p.classementExplain}</p>`;
+    : `<p class="fb-warn">Classement saisi : <strong>${classification}</strong>. Réponse attendue : <strong>${M2_CLASSIFICATION_LABELS[p.classement]}</strong>. ${p.classementExplain}</p>`;
 
   body.innerHTML = `
     <div class="fb-section"><h4>qSOFA</h4><ul class="fb-list">${qLines.join("")}</ul></div>
@@ -839,44 +822,49 @@ m2$("#btn-next-patient2").addEventListener("click", () => {
 // FIN DE MODULE — DEBRIEF
 // ====================================================================
 
+function m2IsUnjustifiedExclusion(result) {
+  return result.classement === "exclu" && (result.expected === "suspect" || result.expected === "possible");
+}
+
 function m2EndModule() {
   m2StopTimer();
-  // Cap à 25 par axe
-  const cap = (v) => Math.min(M2_PER_AXIS_MAX, Math.round(v * 10) / 10);
-  const s = m2State.scores;
-  const capped = {
-    eval: cap(s.eval),
-    traitement: cap(s.traitement),
-    comm: cap(s.comm),
-    triade: cap(s.triade)
-  };
-  const total = Math.round(capped.eval + capped.traitement + capped.comm + capped.triade);
+  const scores = m2State.scores;
+  // Éliminer les résidus des divisions par trois à la précision de calcul.
+  const total = Number(Object.values(scores).reduce((sum, score) => sum + score, 0).toPrecision(15));
+  const ratio = total / 100;
+  const critical = m2State.patientResults.filter(m2IsUnjustifiedExclusion).length;
+  m2State.attestation = { ratio, critical };
 
-  m2$("#m2-total-score").textContent = total;
-  m2$("#m2-val-eval").textContent = `${capped.eval}/25`;
-  m2$("#m2-val-traitement").textContent = `${capped.traitement}/25`;
-  m2$("#m2-val-comm").textContent = `${capped.comm}/25`;
-  m2$("#m2-val-triade").textContent = `${capped.triade}/25`;
-  m2$("#m2-bar-eval").style.width = (capped.eval / 25 * 100) + "%";
-  m2$("#m2-bar-traitement").style.width = (capped.traitement / 25 * 100) + "%";
-  m2$("#m2-bar-comm").style.width = (capped.comm / 25 * 100) + "%";
-  m2$("#m2-bar-triade").style.width = (capped.triade / 25 * 100) + "%";
+  m2$("#m2-total-score").textContent = total.toLocaleString("fr-FR", { maximumFractionDigits: 2 });
+  for (const [axis, max] of Object.entries(M2_AXIS_MAX)) {
+    const score = scores[axis];
+    m2$(`#m2-val-${axis}`).textContent = `${score.toLocaleString("fr-FR", { maximumFractionDigits: 2 })}/${max}`;
+    m2$(`#m2-bar-${axis}`).style.width = (score / max * 100) + "%";
+  }
 
-  let grade = "À reprendre — relire la procédure COREB en 10 points.";
-  if (total >= 85) grade = "Excellent — réflexes COREB acquis.";
-  else if (total >= 70) grade = "Bon niveau — quelques points à consolider.";
-  else if (total >= 50) grade = "Niveau correct — formation complémentaire utile.";
-
+  const palier = window.SGAttestation.palier(ratio, critical);
+  let grade = "Seuil de réussite non atteint. Reprenez les points à revoir dans le bilan.";
+  if (critical > 0) {
+    const exclusions = critical === 1 ? "1 exclusion injustifiée" : `${critical} exclusions injustifiées`;
+    grade = `${exclusions}. Seule l’attestation de participation est disponible.`;
+  } else if (palier === "excellence") grade = "Réussite avec excellence — objectifs du module atteints.";
+  else if (palier === "reussite") grade = "Réussite — consultez le bilan pour repérer les points à améliorer.";
   m2$("#m2-score-grade").textContent = grade;
+
+  const correct = m2State.patientResults.filter((r) => r.classement === r.expected).length;
+  const unclassified = m2State.patientResults.filter((r) => r.classement === null).length;
+  const incorrect = m2State.patientResults.length - correct - unclassified;
+  m2$("#m2-classement-summary").textContent =
+    `Classements justes : ${correct}/${M2_PATIENTS.length} · Erronés : ${incorrect} · Non renseignés : ${unclassified}`;
 
   // Badges
   const badgesEl = m2$("#m2-badges-earned");
   badgesEl.innerHTML = "";
   const badges = [];
-  if (capped.eval >= 22) badges.push({ icon: "✓", label: "qSOFA précis", desc: "Score qSOFA évalué juste sur les 3 patients." });
-  if (capped.triade >= 22) badges.push({ icon: "△", label: "Triade conforme", desc: "Ordre SAMU + Infectio + ARS maîtrisé." });
-  if (capped.comm >= 22) badges.push({ icon: "✎", label: "SBAR exemplaire", desc: "Transmissions structurées sur les 3 cas." });
-  if (total >= 85) badges.push({ icon: "★", label: "Médecin sénior REB", desc: "Score global supérieur à 85/100." });
+  if (scores.eval >= M2_AXIS_MAX.eval * 0.88) badges.push({ icon: "✓", label: "qSOFA précis", desc: "Score qSOFA évalué juste sur les 3 patients." });
+  if (scores.triade >= M2_AXIS_MAX.triade * 0.88) badges.push({ icon: "△", label: "Triade conforme", desc: "Ordre SAMU + Infectio + ARS maîtrisé." });
+  if (scores.comm >= M2_AXIS_MAX.comm * 0.88) badges.push({ icon: "✎", label: "SBAR exemplaire", desc: "Transmissions structurées sur les 3 cas." });
+  if (palier === "excellence") badges.push({ icon: "★", label: "Médecin sénior REB", desc: "Palier de réussite avec excellence atteint." });
   badges.forEach((b) => {
     const card = document.createElement("div");
     card.className = "badge-card";
@@ -891,8 +879,8 @@ function m2EndModule() {
   const replay = m2$("#m2-replay-list");
   replay.innerHTML = "";
   m2State.patientResults.forEach((r, idx) => {
-    const max = Math.round(M2_PER_PATIENT * 4);
-    const total = Math.min(max, Math.round(r.phaseScores.eval + r.phaseScores.traitement + r.phaseScores.comm + r.phaseScores.triade));
+    const max = Math.round(100 / M2_PATIENTS.length);
+    const total = Math.round(Object.values(r.phaseScores).reduce((sum, score) => sum + score, 0));
     const ok = r.classement === r.expected;
     const item = document.createElement("div");
     item.className = "replay-item";
@@ -903,8 +891,9 @@ function m2EndModule() {
         <span class="replay-score">${total} / ${max}</span>
       </div>
       <div class="replay-detail">
-        Classement : <strong>${r.classement || "non classé"}</strong> · attendu : <strong>${r.expected}</strong> ${ok ? "✓" : "✕"}
-        ${r.timeout ? " · finalisé par timeout" : ""}
+        Classement : <strong>${M2_CLASSIFICATION_LABELS[r.classement] || "Non renseigné"}</strong> · attendu : <strong>${M2_CLASSIFICATION_LABELS[r.expected]}</strong> ${ok ? "✓" : "✕"}
+        ${m2IsUnjustifiedExclusion(r) ? " · Exclusion injustifiée" : ""}
+        ${r.timeout ? " · temps écoulé" : ""}
       </div>
     `;
     replay.appendChild(item);
