@@ -710,12 +710,32 @@
 <script src="game3.js"></script>
 <script src="attestation.js"></script>
 <script>
-  /* Attestation de fin de module : score lu sur l'écran de debrief (sur 100), jamais transmis. */
+  /* Attestation de fin de module : le score reste dans le navigateur. */
   document.addEventListener("click", (e) => {
-    const b = e.target.closest("[data-reb-att]"); if (!b) return;
-    const n = b.dataset.rebAtt, ids = { 1: "total-score", 2: "m2-total-score", 3: "m3-total-score" }, titres = { 1: "Le Repérage", 2: "La Triade", 3: "La Filière" };
-    const total = Number((document.getElementById(ids[n]) || {}).textContent) || 0;
-    window.SGAttestation && window.SGAttestation.open({ jeu: "Urgence REB", module: `module ${n} : ${titres[n]}`, code: "REB", color: "#047857", ratio: total / 100, critical: null, track: (ev) => window.urgenceRebAnalytics && window.urgenceRebAnalytics.track(ev) });
+    const b = e.target.closest("[data-reb-att]");
+    if (!b) return;
+    const n = b.dataset.rebAtt;
+    const titres = { 1: "Le Repérage", 2: "La Triade", 3: "La Filière" };
+    let result;
+    if (n === "1") {
+      const { score, critical } = getModule1Result();
+      result = { ratio: score / 100, critical };
+    } else if (n === "2") {
+      const score = Number(document.getElementById("m2-total-score").textContent) || 0;
+      result = { ratio: score / 100, critical: null };
+    } else if (n === "3") {
+      result = window.m3State?.attestation;
+    }
+    if (!result) return;
+
+    window.SGAttestation?.open({
+      jeu: "Urgence REB",
+      module: `module ${n} : ${titres[n]}`,
+      code: "REB",
+      color: "#047857",
+      ...result,
+      track: (ev) => window.urgenceRebAnalytics?.track(ev),
+    });
   });
 </script>
 </body>

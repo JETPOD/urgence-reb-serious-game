@@ -944,6 +944,10 @@ function isFinalizing() { return _finalizing; }
 // SCORING & FEEDBACK
 // ====================================================================
 
+function isModule1CriticalError(patient, decision) {
+  return patient.isREB && decision === "non-reb";
+}
+
 function finalizePatient(timedOut = false) {
   if (_finalizing) return;
   _finalizing = true;
@@ -977,7 +981,7 @@ function finalizePatient(timedOut = false) {
     vig += PER_PATIENT * 0.6;
     feedback.ok.push(p.isREB ? "Décision juste : patient classé suspect REB." : "Décision juste : pas de suspicion REB.");
   } else {
-    if (p.isREB && state.decision === "non-reb") {
+    if (isModule1CriticalError(p, state.decision)) {
       feedback.bad.push("Erreur critique : patient REB classé en filière classique. Risque de transmission majeur.");
     } else if (!p.isREB && state.decision === "suspect-reb") {
       feedback.bad.push("Faux positif : ressources et anxiété mobilisées inutilement.");
@@ -1180,13 +1184,22 @@ function updateScoresUI() {
 // DEBRIEF
 // ====================================================================
 
+function getModule1Result() {
+  const { vigilance, protection, delai, pratiques } = state.scores;
+  const score = vigilance + protection + delai + pratiques;
+  const critical = state.patientResults.filter(({ patient, decision }) => isModule1CriticalError(patient, decision)).length;
+  return { score, critical };
+}
+
 function showDebrief() {
   showScreen("screen-debrief");
-  const total = Math.round(state.scores.vigilance + state.scores.protection + state.scores.delai + state.scores.pratiques);
+  const { score, critical } = getModule1Result();
+  const total = Math.round(score);
   $("#total-score").textContent = total;
 
   let grade = "Apprenti IOA";
-  if (total >= 85) grade = "IOA Sentinelle expert";
+  if (critical > 0) grade = "Décisions de sécurité à revoir. Reprenez le repérage et l’orientation des patients suspects REB.";
+  else if (total >= 85) grade = "IOA Sentinelle expert";
   else if (total >= 70) grade = "IOA confirmé";
   else if (total >= 50) grade = "IOA en formation";
   $("#score-grade").textContent = grade;

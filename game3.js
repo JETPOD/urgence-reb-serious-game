@@ -291,6 +291,7 @@ function m3InitState() {
     calls: [], // { id, spawnedAt, resolvedAt, resolution }
     resolved: 0,
     ended: false,
+    attestation: null,
   };
   M3_PATIENTS.forEach((p) => {
     m3State.perPatient[p.id] = {};
@@ -988,9 +989,17 @@ function m3EndModule(fromTimeout) {
     contacts: cap(m3State.scores.contacts),
     prio: cap(m3State.scores.prio)
   };
-  const total = Math.round(capped.secu + capped.logi + capped.contacts + capped.prio);
+  // Conserver la précision au dixième des axes pour les seuils de l'attestation.
+  const totalTenths = Math.round((capped.secu + capped.logi + capped.contacts + capped.prio) * 10);
+  const total = totalTenths / 10;
+  const rejectedCriticalCalls = M3_CALLS.filter((def) =>
+    def.crit === "critical" && m3State.calls.some((call) => call.id === def.id && call.resolution === "reject")
+  );
+  const critical = rejectedCriticalCalls.length;
+  const ratio = totalTenths / 1000;
+  m3State.attestation = { ratio, critical };
 
-  m3$("#m3-total-score").textContent = total;
+  m3$("#m3-total-score").textContent = total.toLocaleString("fr-FR");
   m3$("#m3-val-secu").textContent = `${capped.secu}/25`;
   m3$("#m3-val-logi").textContent = `${capped.logi}/25`;
   m3$("#m3-val-contacts").textContent = `${capped.contacts}/25`;
@@ -1000,10 +1009,17 @@ function m3EndModule(fromTimeout) {
   m3$("#m3-bar-contacts").style.width = (capped.contacts / M3_AXIS_MAX * 100) + "%";
   m3$("#m3-bar-prio").style.width = (capped.prio / M3_AXIS_MAX * 100) + "%";
 
-  let grade = "À reprendre — relire la procédure COREB annexe ARS/ESR.";
-  if (total >= 85) grade = "Excellent — coordination REB maîtrisée, prêt pour rôle de cadre référent.";
-  else if (total >= 70) grade = "Bon niveau — quelques points d'amélioration sur la priorisation ou les contacts.";
-  else if (total >= 50) grade = "Niveau correct — formation complémentaire recommandée avant exercice réel.";
+  const palier = window.SGAttestation.palier(ratio, critical);
+  let grade = "Seuil de réussite non atteint. Reprenez les points à revoir dans le bilan.";
+  if (critical > 0) {
+    const callers = rejectedCriticalCalls.map((call) => call.who).join(", ");
+    const rejectedLabel = critical === 1 ? "Appel critique rejeté" : `${critical} appels critiques rejetés`;
+    grade = `${rejectedLabel} (${callers}). Il fallait répondre. Seule l’attestation de participation est disponible.`;
+  } else if (palier === "excellence") {
+    grade = "Réussite avec excellence — objectifs du module atteints.";
+  } else if (palier === "reussite") {
+    grade = "Réussite — consultez le bilan pour repérer les points à améliorer.";
+  }
   m3$("#m3-score-grade").textContent = grade;
 
   // Badges
@@ -1017,7 +1033,9 @@ function m3EndModule(fromTimeout) {
     if (!s || !s.done || s.missedA > 0) allAFound = false;
   });
   if (allAFound) badges.push({ icon: "○", label: "Filet à contacts", desc: "Zéro contact étroit A manqué sur les 3 patients." });
-  if (total >= 85) badges.push({ icon: "★", label: "Coordinateur REB", desc: "Score total ≥ 85 / 100." });
+  if (Math.round(total) >= 85 && critical === 0) {
+    badges.push({ icon: "★", label: "Coordinateur REB", desc: "Score arrondi ≥ 85 / 100, sans rejet d’appel critique." });
+  }
 
   const badgesEl = m3$("#m3-badges-earned");
   badgesEl.innerHTML = "";
