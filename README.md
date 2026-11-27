@@ -22,7 +22,7 @@ Une garde de nuit. Six patients se présentent. Pour chacun, il faut poser les b
 **Étapes COREB** 3 · Évaluer, 4 · Traiter, 5 · Alerter, 6 · Classer
 **Durée** ≈ 10 min · 3 patients suspects REB
 
-Trois patients déjà classés suspects par l'IOA. Évaluation qSOFA, prescription d'examens et de traitement, construction d'une transmission SBAR (SAED) et déclenchement de la triade COREB (SAMU + Infectiologue référent + ARS/CIRE) dans le bon ordre. Score sur quatre axes : Évaluation, Traitement, Communication SBAR, Triade COREB.
+Trois patients déjà classés suspects par l'IOA. Évaluation qSOFA, prescription d'examens et de traitement, construction d'une transmission SBAR (SAED) et déclenchement de la triade COREB (SAMU + Infectiologue référent + ARS/CIRE) dans le bon ordre. Le module attribue 20 points à chacun des axes Évaluation, Traitement et Communication SBAR, 19 points à la chaîne d’alerte et 21 points au classement (7 points par classement juste). Le score de La Triade donne accès à la réussite dès 80/100 et à l’excellence dès 95/100. Choisir « Cas exclu » alors que « Reste suspect » ou « Cas possible » est attendu limite l’attestation à la participation. Le score obtenu reste affiché.
 
 ## Stack technique
 
